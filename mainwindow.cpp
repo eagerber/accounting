@@ -24,12 +24,13 @@ void MainWindow::on_pushButton_clicked()
         return;
 
     QSqlQuery query;
-    query.prepare("INSERT INTO Purchases (ProductName, StoreName, Count, Price, Date) VALUES (:ProductName, :StoreName, :Count, :Price, :Date);");
+    query.prepare("INSERT INTO Purchases (ProductName, StoreName, Count, Price, Category, Date) VALUES (:ProductName, :StoreName, :Count, :Price, :Category, :Date);");
 
     query.bindValue(":ProductName", ui->productNameEdit->text());
     query.bindValue(  ":StoreName", ui->storeNameEdit->text());
     query.bindValue(      ":Count", ui->countEdit->text());
     query.bindValue(      ":Price", ui->priceEdit->text());
+    query.bindValue(   ":Category", ui->categoryEdit->text());
     query.bindValue(       ":Date", ui->dateEdit->text());
 
     qDebug()<<query.exec()<<endl;
