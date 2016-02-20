@@ -51,7 +51,9 @@ void MainWindow::on_updateButton_clicked()
     QSqlQueryModel *model = new QSqlQueryModel;
 
     QSqlQuery query;
-    query.prepare("SELECT [ID], [ProductName], [StoreName], [Count], [Price], [Date], [Category] FROM Purchases");
+    query.prepare("\
+SELECT [ID], [ProductName], [StoreName], [Count], [Price], [Date], [Category], [Discount] \n\
+FROM Purchases");
     query.exec();
 
     model->setQuery(query);
@@ -62,6 +64,7 @@ void MainWindow::on_updateButton_clicked()
     model->setHeaderData(4, Qt::Horizontal, "Price");
     model->setHeaderData(5, Qt::Horizontal, "Date");
     model->setHeaderData(6, Qt::Horizontal, "Category");
+    model->setHeaderData(7, Qt::Horizontal, "Discount");
 
     ui->tableView->setModel(model);
     ui->tableView->setColumnWidth(0, 30);
@@ -71,6 +74,7 @@ void MainWindow::on_updateButton_clicked()
     ui->tableView->setColumnWidth(4, 50);
     ui->tableView->setColumnWidth(5, 100);
     ui->tableView->setColumnWidth(6, 100);
+    ui->tableView->setColumnWidth(7, 100);
     sdb.close();
 }
 
@@ -84,14 +88,15 @@ void MainWindow::on_createDBButton_clicked()
 
     QSqlQuery query;
     query.prepare("\
-CREATE TABLE [Purchases] (                                \
-[ID] INTEGER PRIMARY KEY AUTOINCREMENT,                   \
-[ProductName] TEXT NOT NULL ON CONFLICT FAIL,             \
-[StoreName] TEXT NOT NULL ON CONFLICT FAIL,               \
-[Count] INT NOT NULL ON CONFLICT FAIL DEFAULT 1,          \
-[Price] FLOAT NOT NULL ON CONFLICT FAIL,                  \
-[Currency] CHAR(3) NOT NULL ON CONFLICT FAIL DEFAULT RUB, \
-[Date] DATE NOT NULL ON CONFLICT FAIL DEFAULT TODAY,      \
+CREATE TABLE [Purchases] (                                \n\
+[ID] INTEGER PRIMARY KEY AUTOINCREMENT,                   \n\
+[ProductName] TEXT NOT NULL ON CONFLICT FAIL,             \n\
+[StoreName] TEXT NOT NULL ON CONFLICT FAIL,               \n\
+[Count] INT NOT NULL ON CONFLICT FAIL DEFAULT 1,          \n\
+[Price] FLOAT NOT NULL ON CONFLICT FAIL,                  \n\
+[Currency] CHAR(3) NOT NULL ON CONFLICT FAIL DEFAULT RUB, \n\
+[Discount] BOOL NOT NULL ON CONFLICT FAIL DEFAULT FALSE , \n\
+[Date] DATE NOT NULL ON CONFLICT FAIL DEFAULT TODAY,      \n\
 [Category] TEXT NOT NULL ON CONFLICT FAIL DEFAULT Other);");
 
 
