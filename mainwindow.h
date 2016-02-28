@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include <QString>
+
 namespace Ui {
 class MainWindow;
 }
@@ -22,8 +24,14 @@ private slots:
 
     void on_createDBButton_clicked();
 
+    void on_connectPushButton_clicked();
+
+    void on_testButton_clicked();
+
 private:
     Ui::MainWindow *ui;
+
+    QString _dbFileName;
 };
 
 #endif // MAINWINDOW_H

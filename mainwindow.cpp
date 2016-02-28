@@ -3,6 +3,7 @@
 
 #include <QtSql>
 #include <QSqlQueryModel>
+#include <QFileDialog>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -10,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    _dbFileName = "";
 }
 
 MainWindow::~MainWindow()
@@ -19,8 +21,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
+    if(_dbFileName.isEmpty())
+        return;
+
     QSqlDatabase sdb = QSqlDatabase::addDatabase("QSQLITE");
-    sdb.setDatabaseName("C:\\usr\\other\\accounting\\accounting.db");
+    sdb.setDatabaseName(_dbFileName);
 
     if (!sdb.open())
         return;
@@ -30,8 +35,8 @@ void MainWindow::on_pushButton_clicked()
 
     query.bindValue(":ProductName", ui->productNameEdit->text());
     query.bindValue(  ":StoreName", ui->storeNameEdit->text());
-    query.bindValue(      ":Count", ui->countEdit->text());
-    query.bindValue(      ":Price", ui->priceEdit->text());
+    query.bindValue(      ":Count", ui->countEdit->text().replace(",", "."));
+    query.bindValue(      ":Price", ui->priceEdit->text().replace(",", "."));
     query.bindValue(   ":Category", ui->categoryEdit->text());
     query.bindValue(       ":Date", ui->dateEdit->text());
 
@@ -42,8 +47,11 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_updateButton_clicked()
 {
+    if(_dbFileName.isEmpty())
+        return;
+
     QSqlDatabase sdb = QSqlDatabase::addDatabase("QSQLITE");
-    sdb.setDatabaseName("C:\\usr\\other\\accounting\\accounting.db");
+    sdb.setDatabaseName(_dbFileName);
 
     if (!sdb.open())
         return;
@@ -80,8 +88,13 @@ FROM Purchases");
 
 void MainWindow::on_createDBButton_clicked()
 {
+    _dbFileName = QFileDialog::getSaveFileName(this, tr("Choose DB"), "", tr("SQL Lite Files (*.sqldb *.db)"));
+
+    if(_dbFileName.isEmpty())
+        return;
+
     QSqlDatabase sdb = QSqlDatabase::addDatabase("QSQLITE");
-    sdb.setDatabaseName("C:\\usr\\other\\accounting\\accounting.db");
+    sdb.setDatabaseName(_dbFileName);
 
     if (!sdb.open())
         return;
@@ -102,4 +115,21 @@ CREATE TABLE [Purchases] (                                \n\
 
     query.exec();
     sdb.close();
+}
+
+void MainWindow::on_connectPushButton_clicked()
+{
+    _dbFileName = QFileDialog::getOpenFileName(this, tr("Choose DB"), "", tr("SQL Lite Files (*.sqldb *.db)"));
+}
+
+void MainWindow::on_testButton_clicked()
+{
+    QString str = "156.50";
+
+    float a = str.toFloat();
+
+    str = "156,50";
+    a = str.replace(",", ".").toFloat();
+
+    int ff = 5;
 }
