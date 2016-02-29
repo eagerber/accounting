@@ -4,6 +4,7 @@
 #include <QtSql>
 #include <QSqlQueryModel>
 #include <QFileDialog>
+#include <QMessageBox>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -12,6 +13,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     _dbFileName = "";
+
+    ui->dateEdit->setText(QDate::currentDate().toString("yyyy-MM-dd"));
+    ui->currencyEdit->setText("RUB");
+    ui->discountEdit->setText("");
 }
 
 MainWindow::~MainWindow()
@@ -22,7 +27,10 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_clicked()
 {
     if(_dbFileName.isEmpty())
+    {
+        QMessageBox::warning(0, tr("DB warrrning."), tr("No associated DB file."));
         return;
+    }
 
     QSqlDatabase sdb = QSqlDatabase::addDatabase("QSQLITE");
     sdb.setDatabaseName(_dbFileName);
