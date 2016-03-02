@@ -6,7 +6,7 @@
 #include <QString>
 #include <QCompleter>
 
-class QStringListModel;
+#include <QStringListModel>
 
 namespace Ui {
 class MainWindow;
@@ -32,12 +32,13 @@ private slots:
     void on_testButton_clicked();
 
 private:
-    QStringListModel* autoCompleteModelForField(const QString field);
+    QStringListModel* autoCompleteModelForField(const QString field, QStringListModel& completerModel);
 
     Ui::MainWindow *ui;
 
     QString _dbFileName;
     QCompleter _productNameCompleter, _storeNameCompleter;
+    QStringListModel _productCompleterModel, _storeCompleterModel;
 };
 
 #endif // MAINWINDOW_H

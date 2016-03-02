@@ -8,7 +8,7 @@
 #include <QCompleter>
 
 
-QStringListModel* MainWindow::autoCompleteModelForField(const QString field)
+QStringListModel* MainWindow::autoCompleteModelForField(const QString field, QStringListModel &completerModel)
 {
     QSqlDatabase sdb = QSqlDatabase::addDatabase("QSQLITE");
     sdb.setDatabaseName(_dbFileName);
@@ -29,7 +29,7 @@ QStringListModel* MainWindow::autoCompleteModelForField(const QString field)
 
     sdb.close();
 
-    return new QStringListModel(list);
+    completerModel.setStringList(list);
 }
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -45,6 +45,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->productNameEdit->setCompleter(&_productNameCompleter);
     ui->storeNameEdit->setCompleter(&_storeNameCompleter);
+
+    _productNameCompleter.setModel(&_productCompleterModel);
+    _storeNameCompleter.setModel(&_storeCompleterModel);
 }
 
 MainWindow::~MainWindow()
@@ -80,9 +83,8 @@ void MainWindow::on_pushButton_clicked()
 
     sdb.close();
 
-
-    _productNameCompleter.setModel(autoCompleteModelForField("ProductName"));
-    _storeNameCompleter.setModel(autoCompleteModelForField("StoreName"));
+    autoCompleteModelForField("ProductName", _productCompleterModel);
+    autoCompleteModelForField("StoreName", _storeCompleterModel);
 }
 
 void MainWindow::on_updateButton_clicked()
@@ -161,8 +163,8 @@ void MainWindow::on_connectPushButton_clicked()
 {
     _dbFileName = QFileDialog::getOpenFileName(this, tr("Choose DB"), "", tr("SQL Lite Files (*.sqldb *.db)"));
 
-    _productNameCompleter.setModel(autoCompleteModelForField("ProductName"));
-    _storeNameCompleter.setModel(autoCompleteModelForField("StoreName"));
+    autoCompleteModelForField("ProductName", _productCompleterModel);
+    autoCompleteModelForField("StoreName", _storeCompleterModel);
 }
 
 void MainWindow::on_testButton_clicked()
