@@ -5,7 +5,32 @@
 #include <QSqlQueryModel>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QCompleter>
 
+
+QStringListModel* MainWindow::autoCompleteModelForField(const QString field)
+{
+    QSqlDatabase sdb = QSqlDatabase::addDatabase("QSQLITE");
+    sdb.setDatabaseName(_dbFileName);
+
+    if (!sdb.open())
+        return new QStringListModel();
+
+    QString queryString("SELECT DISTINCT [%1] FROM Purchases;");
+
+    QSqlQuery query(queryString.arg(field));
+    query.exec();
+
+    QStringList list;
+    while(query.next())
+    {
+        list.push_back(query.value(field).toString());
+    }
+
+    sdb.close();
+
+    return new QStringListModel(list);
+}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,6 +42,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->dateEdit->setText(QDate::currentDate().toString("yyyy-MM-dd"));
     ui->currencyEdit->setText("RUB");
     ui->discountEdit->setText("");
+
+    ui->productNameEdit->setCompleter(&_productNameCompleter);
+    ui->storeNameEdit->setCompleter(&_storeNameCompleter);
 }
 
 MainWindow::~MainWindow()
@@ -51,6 +79,10 @@ void MainWindow::on_pushButton_clicked()
     qDebug()<<query.exec()<<endl;
 
     sdb.close();
+
+
+    _productNameCompleter.setModel(autoCompleteModelForField("ProductName"));
+    _storeNameCompleter.setModel(autoCompleteModelForField("StoreName"));
 }
 
 void MainWindow::on_updateButton_clicked()
@@ -69,7 +101,7 @@ void MainWindow::on_updateButton_clicked()
     QSqlQuery query;
     query.prepare("\
 SELECT [ID], [ProductName], [StoreName], [Count], [Price], [Date], [Category], [Discount] \n\
-FROM Purchases");
+FROM Purchases;");
     query.exec();
 
     model->setQuery(query);
@@ -128,6 +160,9 @@ CREATE TABLE [Purchases] (                                \n\
 void MainWindow::on_connectPushButton_clicked()
 {
     _dbFileName = QFileDialog::getOpenFileName(this, tr("Choose DB"), "", tr("SQL Lite Files (*.sqldb *.db)"));
+
+    _productNameCompleter.setModel(autoCompleteModelForField("ProductName"));
+    _storeNameCompleter.setModel(autoCompleteModelForField("StoreName"));
 }
 
 void MainWindow::on_testButton_clicked()
