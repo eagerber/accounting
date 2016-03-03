@@ -118,7 +118,7 @@ void MainWindow::on_updateButton_clicked()
 
     QSqlQuery query;
     query.prepare("\
-SELECT [ID], [ProductName], [StoreName], [Count], [Price], [Date], [Category], [Discount] \n\
+SELECT [ID], [Product], [Store], [Count], [Price], [Date], [Category], [Discount] \n\
 FROM Purchases;");
     query.exec();
 
@@ -159,15 +159,15 @@ void MainWindow::on_createDBButton_clicked()
 
     QSqlQuery query;
     query.prepare("\
-CREATE TABLE [Purchases] (                                \n\
-[ID] INTEGER PRIMARY KEY AUTOINCREMENT,                   \n\
-[ProductName] TEXT NOT NULL ON CONFLICT FAIL,             \n\
-[StoreName] TEXT NOT NULL ON CONFLICT FAIL,               \n\
-[Count] INT NOT NULL ON CONFLICT FAIL DEFAULT 1,          \n\
-[Price] FLOAT NOT NULL ON CONFLICT FAIL,                  \n\
+CREATE TABLE [Purchases] ( \n\
+[ID] INTEGER PRIMARY KEY AUTOINCREMENT, \n\
+[Product] TEXT NOT NULL ON CONFLICT FAIL, \n\
+[Store] TEXT NOT NULL ON CONFLICT FAIL, \n\
+[Count] INT NOT NULL ON CONFLICT FAIL DEFAULT 1, \n\
+[Price] FLOAT NOT NULL ON CONFLICT FAIL, \n\
 [Currency] CHAR(3) NOT NULL ON CONFLICT FAIL DEFAULT RUB, \n\
 [Discount] BOOL NOT NULL ON CONFLICT FAIL DEFAULT FALSE , \n\
-[Date] DATE NOT NULL ON CONFLICT FAIL DEFAULT TODAY,      \n\
+[Date] DATE NOT NULL ON CONFLICT FAIL DEFAULT TODAY, \n\
 [Category] TEXT NOT NULL ON CONFLICT FAIL DEFAULT Other);");
 
 
@@ -212,15 +212,13 @@ void MainWindow::on_convertDBButton_clicked()
 
     QString fileName = dir.path() + "/" + ui->convertScriptComboBox->currentText();
     QFile file(fileName);
-    if(!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::information(0, "error", file.errorString());
-    }
+    if(!file.open(QIODevice::ReadOnly))
+        return;
 
     QTextStream in(&file);
     QStringList sqlScript = in.readAll().split(";");
+    sqlScript.removeLast();
 
     file.close();
     executeSqlQuery(_dbFileName, sqlScript);
-
-    int a = 0;
 }
