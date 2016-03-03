@@ -37,8 +37,8 @@ private:
     Ui::MainWindow *ui;
 
     QString _dbFileName;
-    QCompleter _productNameCompleter, _storeNameCompleter;
-    QStringListModel _productCompleterModel, _storeCompleterModel;
+    QCompleter _productCompleter, _storeCompleter, _categoryCompleter;
+    QStringListModel _productCompleterModel, _storeCompleterModel, _categoryCompleterModel;
 };
 
 #endif // MAINWINDOW_H

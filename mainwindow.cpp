@@ -43,11 +43,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->currencyEdit->setText("RUB");
     ui->discountEdit->setText("");
 
-    ui->productNameEdit->setCompleter(&_productNameCompleter);
-    ui->storeNameEdit->setCompleter(&_storeNameCompleter);
+    ui->productNameEdit->setCompleter(&_productCompleter);
+    ui->storeNameEdit->setCompleter(&_storeCompleter);
+    ui->categoryEdit->setCompleter(&_categoryCompleter);
 
-    _productNameCompleter.setModel(&_productCompleterModel);
-    _storeNameCompleter.setModel(&_storeCompleterModel);
+    _productCompleter.setModel(&_productCompleterModel);
+    _storeCompleter.setModel(&_storeCompleterModel);
+    _categoryCompleter.setModel(&_categoryCompleterModel);
 }
 
 MainWindow::~MainWindow()
@@ -85,6 +87,7 @@ void MainWindow::on_pushButton_clicked()
 
     autoCompleteModelForField("ProductName", _productCompleterModel);
     autoCompleteModelForField("StoreName", _storeCompleterModel);
+    autoCompleteModelForField("Category", _categoryCompleterModel);
 }
 
 void MainWindow::on_updateButton_clicked()
@@ -165,6 +168,7 @@ void MainWindow::on_connectPushButton_clicked()
 
     autoCompleteModelForField("ProductName", _productCompleterModel);
     autoCompleteModelForField("StoreName", _storeCompleterModel);
+    autoCompleteModelForField("Category", _categoryCompleterModel);
 }
 
 void MainWindow::on_testButton_clicked()
