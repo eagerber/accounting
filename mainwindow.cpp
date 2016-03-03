@@ -8,13 +8,13 @@
 #include <QCompleter>
 
 
-QStringListModel* MainWindow::autoCompleteModelForField(const QString field, QStringListModel &completerModel)
+void MainWindow::autoCompleteModelForField(const QString field, QStringListModel &completerModel)
 {
     QSqlDatabase sdb = QSqlDatabase::addDatabase("QSQLITE");
     sdb.setDatabaseName(_dbFileName);
 
     if (!sdb.open())
-        return new QStringListModel();
+        return;
 
     QString queryString("SELECT DISTINCT [%1] FROM Purchases;");
 
@@ -50,6 +50,17 @@ MainWindow::MainWindow(QWidget *parent) :
     _productCompleter.setModel(&_productCompleterModel);
     _storeCompleter.setModel(&_storeCompleterModel);
     _categoryCompleter.setModel(&_categoryCompleterModel);
+
+
+    QDir dir(QCoreApplication::applicationDirPath());
+    dir.cd("db-scripts");
+
+    QFileInfoList dirContent = dir.entryInfoList({"*.sql"});
+    for(const auto &item : dirContent)
+    {
+        ui->convertScriptComboBox->addItem(item.fileName());
+    }
+
 }
 
 MainWindow::~MainWindow()
@@ -88,6 +99,8 @@ void MainWindow::on_pushButton_clicked()
     autoCompleteModelForField("ProductName", _productCompleterModel);
     autoCompleteModelForField("StoreName", _storeCompleterModel);
     autoCompleteModelForField("Category", _categoryCompleterModel);
+
+    ui->productNameEdit->setFocus();
 }
 
 void MainWindow::on_updateButton_clicked()
@@ -171,14 +184,43 @@ void MainWindow::on_connectPushButton_clicked()
     autoCompleteModelForField("Category", _categoryCompleterModel);
 }
 
-void MainWindow::on_testButton_clicked()
+void executeSqlQuery(QString dbFileName, const QStringList &queryString)
 {
-    QString str = "156.50";
+    QSqlDatabase sdb = QSqlDatabase::addDatabase("QSQLITE");
+    sdb.setDatabaseName(dbFileName);
 
-    float a = str.toFloat();
+    if (!sdb.open())
+        return;
 
-    str = "156,50";
-    a = str.replace(",", ".").toFloat();
+    for(const auto &item : queryString)
+    {
+        QSqlQuery query;
+        query.prepare(item);
+        query.exec();
+    }
 
-    int ff = 5;
+    sdb.close();
+}
+
+void MainWindow::on_convertDBButton_clicked()
+{
+    if(_dbFileName.isEmpty())
+        return;
+
+    QDir dir(QCoreApplication::applicationDirPath());
+    dir.cd("db-scripts");
+
+    QString fileName = dir.path() + "/" + ui->convertScriptComboBox->currentText();
+    QFile file(fileName);
+    if(!file.open(QIODevice::ReadOnly)) {
+        QMessageBox::information(0, "error", file.errorString());
+    }
+
+    QTextStream in(&file);
+    QStringList sqlScript = in.readAll().split(";");
+
+    file.close();
+    executeSqlQuery(_dbFileName, sqlScript);
+
+    int a = 0;
 }

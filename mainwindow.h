@@ -29,10 +29,10 @@ private slots:
 
     void on_connectPushButton_clicked();
 
-    void on_testButton_clicked();
+    void on_convertDBButton_clicked();
 
 private:
-    QStringListModel* autoCompleteModelForField(const QString field, QStringListModel& completerModel);
+    void autoCompleteModelForField(const QString field, QStringListModel& completerModel);
 
     Ui::MainWindow *ui;
 
