@@ -51,7 +51,6 @@ MainWindow::MainWindow(QWidget *parent) :
     _storeCompleter.setModel(&_storeCompleterModel);
     _categoryCompleter.setModel(&_categoryCompleterModel);
 
-
     QDir dir(QCoreApplication::applicationDirPath());
     dir.cd("db-scripts");
 
@@ -83,21 +82,21 @@ void MainWindow::on_pushButton_clicked()
         return;
 
     QSqlQuery query;
-    query.prepare("INSERT INTO Purchases (ProductName, StoreName, Count, Price, Category, Date) VALUES (:ProductName, :StoreName, :Count, :Price, :Category, :Date);");
+    query.prepare("INSERT INTO Purchases (Product, Store, Count, Price, Category, Date) VALUES (:Product, :Store, :Count, :Price, :Category, :Date);");
 
-    query.bindValue(":ProductName", ui->productNameEdit->text());
-    query.bindValue(  ":StoreName", ui->storeNameEdit->text());
-    query.bindValue(      ":Count", ui->countEdit->text().replace(",", "."));
-    query.bindValue(      ":Price", ui->priceEdit->text().replace(",", "."));
-    query.bindValue(   ":Category", ui->categoryEdit->text());
-    query.bindValue(       ":Date", ui->dateEdit->text());
+    query.bindValue( ":Product", ui->productNameEdit->text());
+    query.bindValue(   ":Store", ui->storeNameEdit->text());
+    query.bindValue(   ":Count", ui->countEdit->text().replace(",", "."));
+    query.bindValue(   ":Price", ui->priceEdit->text().replace(",", "."));
+    query.bindValue(":Category", ui->categoryEdit->text());
+    query.bindValue(    ":Date", ui->dateEdit->text());
 
     qDebug()<<query.exec()<<endl;
 
     sdb.close();
 
-    autoCompleteModelForField("ProductName", _productCompleterModel);
-    autoCompleteModelForField("StoreName", _storeCompleterModel);
+    autoCompleteModelForField("Product", _productCompleterModel);
+    autoCompleteModelForField("Store", _storeCompleterModel);
     autoCompleteModelForField("Category", _categoryCompleterModel);
 
     ui->productNameEdit->setFocus();
@@ -179,8 +178,8 @@ void MainWindow::on_connectPushButton_clicked()
 {
     _dbFileName = QFileDialog::getOpenFileName(this, tr("Choose DB"), "", tr("SQL Lite Files (*.sqldb *.db)"));
 
-    autoCompleteModelForField("ProductName", _productCompleterModel);
-    autoCompleteModelForField("StoreName", _storeCompleterModel);
+    autoCompleteModelForField("Product", _productCompleterModel);
+    autoCompleteModelForField("Store", _storeCompleterModel);
     autoCompleteModelForField("Category", _categoryCompleterModel);
 }
 

@@ -34,4 +34,4 @@ Debug:MOC_DIR = debug/.moc
 Debug:RCC_DIR = debug/.rcc
 Debug:UI_DIR = debug/.ui
 
-QMAKE_POST_LINK=$(COPY_DIR) $$PWD/db-scripts $$OUT_PWD/$$DESTDIR
+#QMAKE_POST_LINK=$(COPY_DIR) $$PWD/db-scripts $$OUT_PWD/$$DESTDIR
