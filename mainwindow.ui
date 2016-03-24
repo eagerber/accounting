@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>799</width>
+    <width>867</width>
     <height>478</height>
    </rect>
   </property>
@@ -214,9 +214,12 @@
      <rect>
       <x>10</x>
       <y>130</y>
-      <width>771</width>
+      <width>841</width>
       <height>192</height>
      </rect>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::AllEditTriggers</set>
     </property>
    </widget>
    <widget class="QLineEdit" name="discountEdit">
@@ -261,7 +264,7 @@
    <widget class="QPushButton" name="createDBButton">
     <property name="geometry">
      <rect>
-      <x>710</x>
+      <x>780</x>
       <y>360</y>
       <width>75</width>
       <height>23</height>
@@ -287,7 +290,7 @@
    <widget class="QPushButton" name="convertDBButton">
     <property name="geometry">
      <rect>
-      <x>450</x>
+      <x>520</x>
       <y>390</y>
       <width>75</width>
       <height>23</height>
@@ -300,7 +303,7 @@
    <widget class="QComboBox" name="convertScriptComboBox">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>600</x>
       <y>390</y>
       <width>251</width>
       <height>22</height>
@@ -313,7 +316,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>799</width>
+     <width>867</width>
      <height>21</height>
     </rect>
    </property>

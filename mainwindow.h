@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 
+#include <QtSql>
 #include <QString>
 #include <QCompleter>
 
@@ -33,8 +34,11 @@ private slots:
 
 private:
     void autoCompleteModelForField(const QString field, QStringListModel& completerModel);
+    void executeSqlQuery(const QStringList &queryString);
 
     Ui::MainWindow *ui;
+
+    QSqlDatabase _sdb;
 
     QString _dbFileName;
     QCompleter _productCompleter, _storeCompleter, _categoryCompleter;

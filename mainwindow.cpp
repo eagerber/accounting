@@ -1,8 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QtSql>
 #include <QSqlQueryModel>
+#include <QSqlRelationalTableModel>
+#include <QSqlRelation>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QCompleter>
@@ -10,10 +11,7 @@
 
 void MainWindow::autoCompleteModelForField(const QString field, QStringListModel &completerModel)
 {
-    QSqlDatabase sdb = QSqlDatabase::addDatabase("QSQLITE");
-    sdb.setDatabaseName(_dbFileName);
-
-    if (!sdb.open())
+    if (!_sdb.open())
         return;
 
     QString queryString("SELECT DISTINCT [%1] FROM Purchases;");
@@ -26,8 +24,6 @@ void MainWindow::autoCompleteModelForField(const QString field, QStringListModel
     {
         list.push_back(query.value(field).toString());
     }
-
-    sdb.close();
 
     completerModel.setStringList(list);
 }
@@ -50,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _productCompleter.setModel(&_productCompleterModel);
     _storeCompleter.setModel(&_storeCompleterModel);
     _categoryCompleter.setModel(&_categoryCompleterModel);
+
 
     QDir dir(QCoreApplication::applicationDirPath());
     dir.cd("db-scripts");
@@ -75,12 +72,6 @@ void MainWindow::on_pushButton_clicked()
         return;
     }
 
-    QSqlDatabase sdb = QSqlDatabase::addDatabase("QSQLITE");
-    sdb.setDatabaseName(_dbFileName);
-
-    if (!sdb.open())
-        return;
-
     QSqlQuery query;
     query.prepare("INSERT INTO Purchases (Product, Store, Count, Price, Category, Date) VALUES (:Product, :Store, :Count, :Price, :Category, :Date);");
 
@@ -93,8 +84,6 @@ void MainWindow::on_pushButton_clicked()
 
     qDebug()<<query.exec()<<endl;
 
-    sdb.close();
-
     autoCompleteModelForField("Product", _productCompleterModel);
     autoCompleteModelForField("Store", _storeCompleterModel);
     autoCompleteModelForField("Category", _categoryCompleterModel);
@@ -104,32 +93,14 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_updateButton_clicked()
 {
-    if(_dbFileName.isEmpty())
+    if (!_sdb.open())
         return;
 
-    QSqlDatabase sdb = QSqlDatabase::addDatabase("QSQLITE");
-    sdb.setDatabaseName(_dbFileName);
-
-    if (!sdb.open())
-        return;
-
-    QSqlQueryModel *model = new QSqlQueryModel;
-
-    QSqlQuery query;
-    query.prepare("\
-SELECT [ID], [Product], [Store], [Count], [Price], [Date], [Category], [Discount] \n\
-FROM Purchases;");
-    query.exec();
-
-    model->setQuery(query);
-    model->setHeaderData(0, Qt::Horizontal, "ID");
-    model->setHeaderData(1, Qt::Horizontal, "ProductName");
-    model->setHeaderData(2, Qt::Horizontal, "StoreName");
-    model->setHeaderData(3, Qt::Horizontal, "Count");
-    model->setHeaderData(4, Qt::Horizontal, "Price");
-    model->setHeaderData(5, Qt::Horizontal, "Date");
-    model->setHeaderData(6, Qt::Horizontal, "Category");
-    model->setHeaderData(7, Qt::Horizontal, "Discount");
+    QSqlRelationalTableModel *model = new QSqlRelationalTableModel(this, _sdb);
+    model->setEditStrategy(QSqlTableModel::OnFieldChange);
+    model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
+    model->setTable("Purchases");
+    model->select();
 
     ui->tableView->setModel(model);
     ui->tableView->setColumnWidth(0, 30);
@@ -140,7 +111,6 @@ FROM Purchases;");
     ui->tableView->setColumnWidth(5, 100);
     ui->tableView->setColumnWidth(6, 100);
     ui->tableView->setColumnWidth(7, 100);
-    sdb.close();
 }
 
 void MainWindow::on_createDBButton_clicked()
@@ -150,10 +120,10 @@ void MainWindow::on_createDBButton_clicked()
     if(_dbFileName.isEmpty())
         return;
 
-    QSqlDatabase sdb = QSqlDatabase::addDatabase("QSQLITE");
-    sdb.setDatabaseName(_dbFileName);
+    _sdb = QSqlDatabase::addDatabase("QSQLITE");
+    _sdb.setDatabaseName(_dbFileName);
 
-    if (!sdb.open())
+    if (!_sdb.open())
         return;
 
     QSqlQuery query;
@@ -171,24 +141,26 @@ CREATE TABLE [Purchases] ( \n\
 
 
     query.exec();
-    sdb.close();
 }
 
 void MainWindow::on_connectPushButton_clicked()
 {
     _dbFileName = QFileDialog::getOpenFileName(this, tr("Choose DB"), "", tr("SQL Lite Files (*.sqldb *.db)"));
 
+    if(_dbFileName.isEmpty())
+        return;
+
+    _sdb = QSqlDatabase::addDatabase("QSQLITE");
+    _sdb.setDatabaseName(_dbFileName);
+
     autoCompleteModelForField("Product", _productCompleterModel);
     autoCompleteModelForField("Store", _storeCompleterModel);
     autoCompleteModelForField("Category", _categoryCompleterModel);
 }
 
-void executeSqlQuery(QString dbFileName, const QStringList &queryString)
+void MainWindow::executeSqlQuery(const QStringList &queryString)
 {
-    QSqlDatabase sdb = QSqlDatabase::addDatabase("QSQLITE");
-    sdb.setDatabaseName(dbFileName);
-
-    if (!sdb.open())
+    if (!_sdb.open())
         return;
 
     for(const auto &item : queryString)
@@ -197,8 +169,6 @@ void executeSqlQuery(QString dbFileName, const QStringList &queryString)
         query.prepare(item);
         query.exec();
     }
-
-    sdb.close();
 }
 
 void MainWindow::on_convertDBButton_clicked()
@@ -219,5 +189,5 @@ void MainWindow::on_convertDBButton_clicked()
     sqlScript.removeLast();
 
     file.close();
-    executeSqlQuery(_dbFileName, sqlScript);
+    executeSqlQuery(sqlScript);
 }
