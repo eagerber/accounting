@@ -191,3 +191,43 @@ void MainWindow::on_convertDBButton_clicked()
     file.close();
     executeSqlQuery(sqlScript);
 }
+
+void MainWindow::on_productNameEdit_returnPressed()
+{
+    ui->pushButton->click();
+}
+
+void MainWindow::on_storeNameEdit_returnPressed()
+{
+    ui->pushButton->click();
+}
+
+void MainWindow::on_countEdit_returnPressed()
+{
+    ui->pushButton->click();
+}
+
+void MainWindow::on_priceEdit_returnPressed()
+{
+    ui->pushButton->click();
+}
+
+void MainWindow::on_currencyEdit_returnPressed()
+{
+    ui->pushButton->click();
+}
+
+void MainWindow::on_categoryEdit_returnPressed()
+{
+    ui->pushButton->click();
+}
+
+void MainWindow::on_discountEdit_returnPressed()
+{
+    ui->pushButton->click();
+}
+
+void MainWindow::on_dateEdit_returnPressed()
+{
+    ui->pushButton->click();
+}
