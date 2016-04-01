@@ -8,6 +8,8 @@
 #include <QCompleter>
 
 #include <QStringListModel>
+#include "db.h"
+#include "db-settings-form.h"
 
 namespace Ui {
 class MainWindow;
@@ -30,7 +32,7 @@ private slots:
 
     void on_connectPushButton_clicked();
 
-    void on_convertDBButton_clicked();
+    void on_settingsPushButton_clicked();
 
     void on_productNameEdit_returnPressed();
 
@@ -50,15 +52,15 @@ private slots:
 
 private:
     void autoCompleteModelForField(const QString field, QStringListModel& completerModel);
-    void executeSqlQuery(const QStringList &queryString);
 
     Ui::MainWindow *ui;
 
-    QSqlDatabase _sdb;
+    DB _db;
 
-    QString _dbFileName;
     QCompleter _productCompleter, _storeCompleter, _categoryCompleter;
     QStringListModel _productCompleterModel, _storeCompleterModel, _categoryCompleterModel;
+
+    DBSettingsForm _dbsettingsform;
 };
 
 #endif // MAINWINDOW_H
