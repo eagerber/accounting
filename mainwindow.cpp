@@ -1,8 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "dbsettingsform.h"
-#include "db_constdef.h"
+#include "db-constdef.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -11,6 +10,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
+    _dbsettingsform(this),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
     _productCompleter.setModel(&_productCompleterModel);
     _storeCompleter.setModel(&_storeCompleterModel);
     _categoryCompleter.setModel(&_categoryCompleterModel);
+
+    _dbsettingsform.setWindowTitle("Database Settings");
 }
 
 MainWindow::~MainWindow()
@@ -43,6 +45,8 @@ void MainWindow::on_pushButton_clicked()
         ui->categoryEdit->text(),
         ui->dateEdit->text());
 
+    qDebug() << "WTF!!!!!!!!";
+    qDebug() << queryString;
     _db.executeSqlQuery(queryString);
 
     autoCompleteModelForField(Queries::product, _productCompleterModel);
@@ -54,8 +58,10 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_updateButton_clicked()
 {
-    QSqlRelationalTableModel& model = _db.model(this);
-    ui->tableView->setModel(&model);
+    QSqlRelationalTableModel* model = _db.model(this);
+
+    ui->tableView->setModel(model);
+
     ui->tableView->setColumnWidth(0, 30);
     ui->tableView->setColumnWidth(1, 150);
     ui->tableView->setColumnWidth(2, 150);
@@ -69,10 +75,7 @@ void MainWindow::on_updateButton_clicked()
 void MainWindow::on_createDBButton_clicked()
 {
     QString dbFileName = QFileDialog::getSaveFileName(
-                this,
-                tr("Choose DB"),
-                tr("SQL Lite Files (*.sqldb *.db)"),
-                tr("SQL Lite Files (*.sqldb *.db)"));
+                this, tr("Choose DB"), "", tr("SQL Lite Files (*.sqldb *.db)"));
 
     if(dbFileName.isEmpty())
         return;
@@ -83,10 +86,7 @@ void MainWindow::on_createDBButton_clicked()
 void MainWindow::on_connectPushButton_clicked()
 {
     QString dbFileName = QFileDialog::getOpenFileName(
-                this,
-                tr("Choose DB"),
-                tr("SQL Lite Files (*.sqldb *.db)"),
-                tr("SQL Lite Files (*.sqldb *.db)"));
+                this, tr("Choose DB"), "", tr("SQL Lite Files (*.sqldb *.db)"));
 
     if(dbFileName.isEmpty())
         return;
@@ -98,20 +98,23 @@ void MainWindow::on_connectPushButton_clicked()
     autoCompleteModelForField("Category", _categoryCompleterModel);
 }
 
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::on_settingsPushButton_clicked()
 {
-    DBSettingsForm dbsettingsform(this);
-    dbsettingsform.show();
+    _dbsettingsform.show();
 }
 
 void MainWindow::autoCompleteModelForField(const QString field, QStringListModel &completerModel)
 {
-    QSqlQuery query = _db.executeSqlQuery(Queries::distinctPurchases.arg(field));
+    QString queryString =Queries::distinctPurchases(field);
+    auto query = _db.executeSqlQuery(queryString);
+
+    if(query.isNull())
+        return;
 
     QStringList list;
-    while(query.next())
+    while(query->next())
     {
-        list.push_back(query.value(field).toString());
+        list.push_back(query->value(field).toString());
     }
     completerModel.setStringList(list);
 }

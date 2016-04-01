@@ -1,4 +1,4 @@
-#include "dbsettingsform.h"
+#include "db-settings-form.h"
 #include "ui_dbsettingsform.h"
 
 #include <QDir>

@@ -11,14 +11,14 @@ static const QString createDB;
 static const QString purchasesTable;
 static const QString dbType;
 
-static const QString distinctPurchases;
-
 static const QString product;
 static const QString store;
 static const QString count;
 static const QString price;
 static const QString category;
 static const QString date;
+
+static const QString distinctPurchases(QString field);
 
 static const QString insertIntoPurchases(QString productValue,
     QString storeValue,

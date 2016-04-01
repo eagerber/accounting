@@ -17,14 +17,14 @@ CONFIG += c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    dbsettingsform.cpp \
     db.cpp \
-    db_constdef.cpp
+    db-settings-form.cpp \
+    db-constdef.cpp
 
 HEADERS  += mainwindow.h \
-    dbsettingsform.h \
     db.h \
-    db_constdef.h
+    db-settings-form.h \
+    db-constdef.h
 
 FORMS    += mainwindow.ui \
     dbsettingsform.ui
