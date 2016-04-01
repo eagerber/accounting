@@ -261,19 +261,6 @@
      <string>Update</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="createDBButton">
-    <property name="geometry">
-     <rect>
-      <x>780</x>
-      <y>360</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Create</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="connectPushButton">
     <property name="geometry">
      <rect>
@@ -287,27 +274,17 @@
      <string>Connect</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="convertDBButton">
+   <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>390</y>
+      <x>10</x>
+      <y>380</y>
       <width>75</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>Convert DB</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="convertScriptComboBox">
-    <property name="geometry">
-     <rect>
-      <x>600</x>
-      <y>390</y>
-      <width>251</width>
-      <height>22</height>
-     </rect>
+     <string>PushButton</string>
     </property>
    </widget>
   </widget>
@@ -355,7 +332,6 @@
   <tabstop>pushButton</tabstop>
   <tabstop>updateButton</tabstop>
   <tabstop>tableView</tabstop>
-  <tabstop>createDBButton</tabstop>
   <tabstop>connectPushButton</tabstop>
  </tabstops>
  <resources/>

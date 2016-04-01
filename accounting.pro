@@ -16,11 +16,18 @@ QT += sql
 CONFIG += c++11
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    dbsettingsform.cpp \
+    db.cpp \
+    db_constdef.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    dbsettingsform.h \
+    db.h \
+    db_constdef.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    dbsettingsform.ui
 
 Release:DESTDIR = release
 Release:OBJECTS_DIR = release/.obj

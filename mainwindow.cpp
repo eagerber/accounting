@@ -1,39 +1,19 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QSqlQueryModel>
-#include <QSqlRelationalTableModel>
-#include <QSqlRelation>
+#include "dbsettingsform.h"
+#include "db_constdef.h"
+
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QCompleter>
 
-
-void MainWindow::autoCompleteModelForField(const QString field, QStringListModel &completerModel)
-{
-    if (!_sdb.open())
-        return;
-
-    QString queryString("SELECT DISTINCT [%1] FROM Purchases;");
-
-    QSqlQuery query(queryString.arg(field));
-    query.exec();
-
-    QStringList list;
-    while(query.next())
-    {
-        list.push_back(query.value(field).toString());
-    }
-
-    completerModel.setStringList(list);
-}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    _dbFileName = "";
 
     ui->dateEdit->setText(QDate::currentDate().toString("yyyy-MM-dd"));
     ui->currencyEdit->setText("RUB");
@@ -46,17 +26,6 @@ MainWindow::MainWindow(QWidget *parent) :
     _productCompleter.setModel(&_productCompleterModel);
     _storeCompleter.setModel(&_storeCompleterModel);
     _categoryCompleter.setModel(&_categoryCompleterModel);
-
-
-    QDir dir(QCoreApplication::applicationDirPath());
-    dir.cd("db-scripts");
-
-    QFileInfoList dirContent = dir.entryInfoList({"*.sql"});
-    for(const auto &item : dirContent)
-    {
-        ui->convertScriptComboBox->addItem(item.fileName());
-    }
-
 }
 
 MainWindow::~MainWindow()
@@ -66,43 +35,27 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    if(_dbFileName.isEmpty())
-    {
-        QMessageBox::warning(0, tr("DB warrrning."), tr("No associated DB file."));
-        return;
-    }
+    QString queryString = Queries::insertIntoPurchases(
+        ui->productNameEdit->text(),
+        ui->storeNameEdit->text(),
+        ui->countEdit->text().replace(",", "."),
+        ui->priceEdit->text().replace(",", "."),
+        ui->categoryEdit->text(),
+        ui->dateEdit->text());
 
-    QSqlQuery query;
-    query.prepare("INSERT INTO Purchases (Product, Store, Count, Price, Category, Date) VALUES (:Product, :Store, :Count, :Price, :Category, :Date);");
+    _db.executeSqlQuery(queryString);
 
-    query.bindValue( ":Product", ui->productNameEdit->text());
-    query.bindValue(   ":Store", ui->storeNameEdit->text());
-    query.bindValue(   ":Count", ui->countEdit->text().replace(",", "."));
-    query.bindValue(   ":Price", ui->priceEdit->text().replace(",", "."));
-    query.bindValue(":Category", ui->categoryEdit->text());
-    query.bindValue(    ":Date", ui->dateEdit->text());
-
-    qDebug()<<query.exec()<<endl;
-
-    autoCompleteModelForField("Product", _productCompleterModel);
-    autoCompleteModelForField("Store", _storeCompleterModel);
-    autoCompleteModelForField("Category", _categoryCompleterModel);
+    autoCompleteModelForField(Queries::product, _productCompleterModel);
+    autoCompleteModelForField(Queries::store, _storeCompleterModel);
+    autoCompleteModelForField(Queries::category, _categoryCompleterModel);
 
     ui->productNameEdit->setFocus();
 }
 
 void MainWindow::on_updateButton_clicked()
 {
-    if (!_sdb.open())
-        return;
-
-    QSqlRelationalTableModel *model = new QSqlRelationalTableModel(this, _sdb);
-    model->setEditStrategy(QSqlTableModel::OnFieldChange);
-    model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
-    model->setTable("Purchases");
-    model->select();
-
-    ui->tableView->setModel(model);
+    QSqlRelationalTableModel& model = _db.model(this);
+    ui->tableView->setModel(&model);
     ui->tableView->setColumnWidth(0, 30);
     ui->tableView->setColumnWidth(1, 150);
     ui->tableView->setColumnWidth(2, 150);
@@ -115,79 +68,50 @@ void MainWindow::on_updateButton_clicked()
 
 void MainWindow::on_createDBButton_clicked()
 {
-    _dbFileName = QFileDialog::getSaveFileName(this, tr("Choose DB"), "", tr("SQL Lite Files (*.sqldb *.db)"));
+    QString dbFileName = QFileDialog::getSaveFileName(
+                this,
+                tr("Choose DB"),
+                tr("SQL Lite Files (*.sqldb *.db)"),
+                tr("SQL Lite Files (*.sqldb *.db)"));
 
-    if(_dbFileName.isEmpty())
+    if(dbFileName.isEmpty())
         return;
 
-    _sdb = QSqlDatabase::addDatabase("QSQLITE");
-    _sdb.setDatabaseName(_dbFileName);
-
-    if (!_sdb.open())
-        return;
-
-    QSqlQuery query;
-    query.prepare("\
-CREATE TABLE [Purchases] ( \n\
-[ID] INTEGER PRIMARY KEY AUTOINCREMENT, \n\
-[Product] TEXT NOT NULL ON CONFLICT FAIL, \n\
-[Store] TEXT NOT NULL ON CONFLICT FAIL, \n\
-[Count] INT NOT NULL ON CONFLICT FAIL DEFAULT 1, \n\
-[Price] FLOAT NOT NULL ON CONFLICT FAIL, \n\
-[Currency] CHAR(3) NOT NULL ON CONFLICT FAIL DEFAULT RUB, \n\
-[Discount] BOOL NOT NULL ON CONFLICT FAIL DEFAULT FALSE , \n\
-[Date] DATE NOT NULL ON CONFLICT FAIL DEFAULT TODAY, \n\
-[Category] TEXT NOT NULL ON CONFLICT FAIL DEFAULT Other);");
-
-
-    query.exec();
+    _db.create(dbFileName);
 }
 
 void MainWindow::on_connectPushButton_clicked()
 {
-    _dbFileName = QFileDialog::getOpenFileName(this, tr("Choose DB"), "", tr("SQL Lite Files (*.sqldb *.db)"));
+    QString dbFileName = QFileDialog::getOpenFileName(
+                this,
+                tr("Choose DB"),
+                tr("SQL Lite Files (*.sqldb *.db)"),
+                tr("SQL Lite Files (*.sqldb *.db)"));
 
-    if(_dbFileName.isEmpty())
+    if(dbFileName.isEmpty())
         return;
 
-    _sdb = QSqlDatabase::addDatabase("QSQLITE");
-    _sdb.setDatabaseName(_dbFileName);
+    _db.init(dbFileName);
 
     autoCompleteModelForField("Product", _productCompleterModel);
     autoCompleteModelForField("Store", _storeCompleterModel);
     autoCompleteModelForField("Category", _categoryCompleterModel);
 }
 
-void MainWindow::executeSqlQuery(const QStringList &queryString)
+void MainWindow::on_pushButton_2_clicked()
 {
-    if (!_sdb.open())
-        return;
-
-    for(const auto &item : queryString)
-    {
-        QSqlQuery query;
-        query.prepare(item);
-        query.exec();
-    }
+    DBSettingsForm dbsettingsform(this);
+    dbsettingsform.show();
 }
 
-void MainWindow::on_convertDBButton_clicked()
+void MainWindow::autoCompleteModelForField(const QString field, QStringListModel &completerModel)
 {
-    if(_dbFileName.isEmpty())
-        return;
+    QSqlQuery query = _db.executeSqlQuery(Queries::distinctPurchases.arg(field));
 
-    QDir dir(QCoreApplication::applicationDirPath());
-    dir.cd("db-scripts");
-
-    QString fileName = dir.path() + "/" + ui->convertScriptComboBox->currentText();
-    QFile file(fileName);
-    if(!file.open(QIODevice::ReadOnly))
-        return;
-
-    QTextStream in(&file);
-    QStringList sqlScript = in.readAll().split(";");
-    sqlScript.removeLast();
-
-    file.close();
-    executeSqlQuery(sqlScript);
+    QStringList list;
+    while(query.next())
+    {
+        list.push_back(query.value(field).toString());
+    }
+    completerModel.setStringList(list);
 }
