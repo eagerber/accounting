@@ -10,6 +10,7 @@
 #include <QStringListModel>
 #include "db.h"
 #include "db-settings-form.h"
+#include "statisticsfrom.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,8 +25,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_clicked();
-
     void on_updateButton_clicked();
 
     void on_createDBButton_clicked();
@@ -36,11 +35,14 @@ private slots:
 
     void resizeEvent(QResizeEvent* event);
 
+    void on_insertPushButton_clicked();
+
 private:
     void autoCompleteModelForField(const QString field, QStringListModel& completerModel);
     void resizeTableView();
     void readSettings(QString settingsFileName);
     void updateTableView();
+    void insert();
 
     Ui::MainWindow *ui;
 
@@ -49,7 +51,8 @@ private:
     QCompleter _productCompleter, _storeCompleter, _categoryCompleter;
     QStringListModel _productCompleterModel, _storeCompleterModel, _categoryCompleterModel;
 
-    DBSettingsForm _dbsettingsform;
+    DBSettingsForm _dbsettingsForm;
+    StatisticsFrom _statisticsForm;
 };
 
 #endif // MAINWINDOW_H

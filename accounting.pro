@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = accounting
 TEMPLATE = app
@@ -19,15 +19,20 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     db.cpp \
     db-settings-form.cpp \
-    db-constdef.cpp
+    db-constdef.cpp \
+    statisticsfrom.cpp \
+    qcustomplot.cpp
 
 HEADERS  += mainwindow.h \
     db.h \
     db-settings-form.h \
-    db-constdef.h
+    db-constdef.h \
+    statisticsfrom.h \
+    qcustomplot.h
 
 FORMS    += mainwindow.ui \
-    dbsettingsform.ui
+    dbsettingsform.ui \
+    statisticsfrom.ui
 
 Release:DESTDIR = release
 Release:OBJECTS_DIR = release/.obj
