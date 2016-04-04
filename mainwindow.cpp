@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QCompleter>
+#include <QSettings>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -28,6 +29,11 @@ MainWindow::MainWindow(QWidget *parent) :
     _categoryCompleter.setModel(&_categoryCompleterModel);
 
     _dbsettingsform.setWindowTitle("Database Settings");
+
+    QString settingsFileName = QDir::current().filePath("settings.ini");
+    readSettings(settingsFileName);
+
+    updateTableView();
 }
 
 MainWindow::~MainWindow()
@@ -58,10 +64,7 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_updateButton_clicked()
 {
-    QSqlRelationalTableModel* model = _db.model(this);
-    ui->tableView->setModel(model);
-
-    resizeTableView();
+    updateTableView();
 }
 
 void MainWindow::on_createDBButton_clicked()
@@ -126,7 +129,7 @@ void MainWindow::resizeTableView()
     tableView->verticalHeader()->setDefaultSectionSize(20);
     tableView->verticalHeader()->hide();
 
-    float width = tableView->width() / 100.0f - 1.04;
+    float width = this->width() / 100.0f - 1.26;
     tableView->setColumnWidth(0, round(width * 4));
     tableView->setColumnWidth(1, round(width * 20));
     tableView->setColumnWidth(2, round(width * 20));
@@ -135,4 +138,20 @@ void MainWindow::resizeTableView()
     tableView->setColumnWidth(5, round(width * 14));
     tableView->setColumnWidth(6, round(width * 14));
     tableView->setColumnWidth(7, round(width * 14));
+}
+
+void MainWindow::readSettings(QString settingsFileName)
+{
+    QSettings settings(settingsFileName, QSettings::IniFormat);
+
+    QString dbFileName = settings.value("SQLiteDBFileName", "").toString();
+    _db.init(dbFileName);
+}
+
+void MainWindow::updateTableView()
+{
+    auto model = _db.model(this);
+    ui->tableView->setModel(model.get());
+
+    resizeTableView();
 }

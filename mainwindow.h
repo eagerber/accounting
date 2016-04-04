@@ -39,6 +39,8 @@ private slots:
 private:
     void autoCompleteModelForField(const QString field, QStringListModel& completerModel);
     void resizeTableView();
+    void readSettings(QString settingsFileName);
+    void updateTableView();
 
     Ui::MainWindow *ui;
 
