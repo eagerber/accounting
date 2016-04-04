@@ -34,8 +34,11 @@ private slots:
 
     void on_settingsPushButton_clicked();
 
+    void resizeEvent(QResizeEvent* event);
+
 private:
     void autoCompleteModelForField(const QString field, QStringListModel& completerModel);
+    void resizeTableView();
 
     Ui::MainWindow *ui;
 

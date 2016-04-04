@@ -59,17 +59,9 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_updateButton_clicked()
 {
     QSqlRelationalTableModel* model = _db.model(this);
-
     ui->tableView->setModel(model);
 
-    ui->tableView->setColumnWidth(0, 30);
-    ui->tableView->setColumnWidth(1, 150);
-    ui->tableView->setColumnWidth(2, 150);
-    ui->tableView->setColumnWidth(3, 50);
-    ui->tableView->setColumnWidth(4, 50);
-    ui->tableView->setColumnWidth(5, 100);
-    ui->tableView->setColumnWidth(6, 100);
-    ui->tableView->setColumnWidth(7, 100);
+    resizeTableView();
 }
 
 void MainWindow::on_createDBButton_clicked()
@@ -103,9 +95,16 @@ void MainWindow::on_settingsPushButton_clicked()
     _dbsettingsform.show();
 }
 
+void MainWindow::resizeEvent(QResizeEvent* event)
+{
+    QMainWindow::resizeEvent(event);
+
+    resizeTableView();
+}
+
 void MainWindow::autoCompleteModelForField(const QString field, QStringListModel &completerModel)
 {
-    QString queryString =Queries::distinctPurchases(field);
+    QString queryString = Queries::distinctPurchases(field);
     auto query = _db.executeSqlQuery(queryString);
 
     if(query.isNull())
@@ -117,4 +116,23 @@ void MainWindow::autoCompleteModelForField(const QString field, QStringListModel
         list.push_back(query->value(field).toString());
     }
     completerModel.setStringList(list);
+}
+
+
+void MainWindow::resizeTableView()
+{
+    auto &tableView = ui->tableView;
+
+    tableView->verticalHeader()->setDefaultSectionSize(20);
+    tableView->verticalHeader()->hide();
+
+    float width = tableView->width() / 100.0f - 1.04;
+    tableView->setColumnWidth(0, round(width * 4));
+    tableView->setColumnWidth(1, round(width * 20));
+    tableView->setColumnWidth(2, round(width * 20));
+    tableView->setColumnWidth(3, round(width * 7));
+    tableView->setColumnWidth(4, round(width * 7));
+    tableView->setColumnWidth(5, round(width * 14));
+    tableView->setColumnWidth(6, round(width * 14));
+    tableView->setColumnWidth(7, round(width * 14));
 }
