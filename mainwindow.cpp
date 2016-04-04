@@ -6,11 +6,14 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QCompleter>
+#include <QSettings>
+#include <QDesktopWidget>
 
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    _dbsettingsform(this),
+    _dbsettingsForm(this),
+    _statisticsForm(this),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -27,7 +30,23 @@ MainWindow::MainWindow(QWidget *parent) :
     _storeCompleter.setModel(&_storeCompleterModel);
     _categoryCompleter.setModel(&_categoryCompleterModel);
 
-    _dbsettingsform.setWindowTitle("Database Settings");
+    _dbsettingsForm.setWindowTitle("Database Settings");
+
+    QString settingsFileName = QDir::current().filePath("settings.ini");
+    readSettings(settingsFileName);
+
+    updateTableView();
+
+    QDesktopWidget desktop;
+    QRect rect = desktop.availableGeometry(desktop.primaryScreen()); // прямоугольник с размерами экрана
+    QPoint center = rect.center(); //координаты центра экрана
+
+    _statisticsForm.setGeometry(
+                center.x() + geometry().width() / 2 + 20,
+                center.y() - geometry().height() / 2,
+                300,
+                300);
+    _statisticsForm.show();
 }
 
 MainWindow::~MainWindow()
@@ -35,41 +54,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pushButton_clicked()
-{
-    QString queryString = Queries::insertIntoPurchases(
-        ui->productNameEdit->text(),
-        ui->storeNameEdit->text(),
-        ui->countEdit->text().replace(",", "."),
-        ui->priceEdit->text().replace(",", "."),
-        ui->categoryEdit->text(),
-        ui->dateEdit->text());
-
-    qDebug() << "WTF!!!!!!!!";
-    qDebug() << queryString;
-    _db.executeSqlQuery(queryString);
-
-    autoCompleteModelForField(Queries::product, _productCompleterModel);
-    autoCompleteModelForField(Queries::store, _storeCompleterModel);
-    autoCompleteModelForField(Queries::category, _categoryCompleterModel);
-
-    ui->productNameEdit->setFocus();
-}
-
 void MainWindow::on_updateButton_clicked()
 {
-    QSqlRelationalTableModel* model = _db.model(this);
-
-    ui->tableView->setModel(model);
-
-    ui->tableView->setColumnWidth(0, 30);
-    ui->tableView->setColumnWidth(1, 150);
-    ui->tableView->setColumnWidth(2, 150);
-    ui->tableView->setColumnWidth(3, 50);
-    ui->tableView->setColumnWidth(4, 50);
-    ui->tableView->setColumnWidth(5, 100);
-    ui->tableView->setColumnWidth(6, 100);
-    ui->tableView->setColumnWidth(7, 100);
+    updateTableView();
 }
 
 void MainWindow::on_createDBButton_clicked()
@@ -100,12 +87,24 @@ void MainWindow::on_connectPushButton_clicked()
 
 void MainWindow::on_settingsPushButton_clicked()
 {
-    _dbsettingsform.show();
+    _dbsettingsForm.show();
+}
+
+void MainWindow::resizeEvent(QResizeEvent* event)
+{
+    QMainWindow::resizeEvent(event);
+
+    resizeTableView();
+}
+
+void MainWindow::on_insertPushButton_clicked()
+{
+    insert();
 }
 
 void MainWindow::autoCompleteModelForField(const QString field, QStringListModel &completerModel)
 {
-    QString queryString =Queries::distinctPurchases(field);
+    QString queryString = Queries::distinctPurchases(field);
     auto query = _db.executeSqlQuery(queryString);
 
     if(query.isNull())
@@ -119,42 +118,58 @@ void MainWindow::autoCompleteModelForField(const QString field, QStringListModel
     completerModel.setStringList(list);
 }
 
-void MainWindow::on_productNameEdit_returnPressed()
+
+void MainWindow::resizeTableView()
 {
-    ui->pushButton->click();
+    auto &tableView = ui->tableView;
+
+    tableView->verticalHeader()->setDefaultSectionSize(20);
+    tableView->verticalHeader()->hide();
+
+    float width = this->width() / 100.0f - 1.26;
+    tableView->setColumnWidth(0, round(width * 4));
+    tableView->setColumnWidth(1, round(width * 20));
+    tableView->setColumnWidth(2, round(width * 20));
+    tableView->setColumnWidth(3, round(width * 7));
+    tableView->setColumnWidth(4, round(width * 7));
+    tableView->setColumnWidth(5, round(width * 14));
+    tableView->setColumnWidth(6, round(width * 14));
+    tableView->setColumnWidth(7, round(width * 14));
 }
 
-void MainWindow::on_storeNameEdit_returnPressed()
+void MainWindow::readSettings(QString settingsFileName)
 {
-    ui->pushButton->click();
+    QSettings settings(settingsFileName, QSettings::IniFormat);
+
+    QString dbFileName = settings.value("SQLiteDBFileName", "").toString();
+    _db.init(dbFileName);
 }
 
-void MainWindow::on_countEdit_returnPressed()
+void MainWindow::updateTableView()
 {
-    ui->pushButton->click();
+    auto model = _db.model(this);
+    ui->tableView->setModel(model.get());
+
+    resizeTableView();
 }
 
-void MainWindow::on_priceEdit_returnPressed()
+void MainWindow::insert()
 {
-    ui->pushButton->click();
-}
+    QString queryString = Queries::insertIntoPurchases(
+        ui->productNameEdit->text(),
+        ui->storeNameEdit->text(),
+        ui->countEdit->text().replace(",", "."),
+        ui->priceEdit->text().replace(",", "."),
+        ui->categoryEdit->text(),
+        ui->dateEdit->text());
 
-void MainWindow::on_currencyEdit_returnPressed()
-{
-    ui->pushButton->click();
-}
+    qDebug() << "WTF!!!!!!!!";
+    qDebug() << queryString;
+    _db.executeSqlQuery(queryString);
 
-void MainWindow::on_categoryEdit_returnPressed()
-{
-    ui->pushButton->click();
-}
+    autoCompleteModelForField(Queries::product, _productCompleterModel);
+    autoCompleteModelForField(Queries::store, _storeCompleterModel);
+    autoCompleteModelForField(Queries::category, _categoryCompleterModel);
 
-void MainWindow::on_discountEdit_returnPressed()
-{
-    ui->pushButton->click();
-}
-
-void MainWindow::on_dateEdit_returnPressed()
-{
-    ui->pushButton->click();
+    ui->productNameEdit->setFocus();
 }

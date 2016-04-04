@@ -5,6 +5,9 @@
 #include <QSqlRelationalTableModel>
 #include <QSqlQuery>
 #include <QSharedPointer>
+#include <QSqlQueryModel>
+#include <QSqlRelation>
+#include <memory>
 
 
 class DB
@@ -19,13 +22,14 @@ public:
     void executeSqlQuery(const QStringList &queryString);
     QSharedPointer<QSqlQuery> executeSqlQuery(const QString &queryString);
 
-    QSqlRelationalTableModel* model(QObject *parent);
+    std::shared_ptr<QSqlRelationalTableModel> model(QObject *parent);
 
 private:
-    void connect(QString dbFileName);
+    void connect();
 
     QSqlDatabase _sdb;
     QString _dbFileName;
+    std::shared_ptr<QSqlRelationalTableModel> _model;
 };
 
 #endif // DATABASE_H

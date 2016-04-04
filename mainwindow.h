@@ -4,12 +4,13 @@
 #include <QMainWindow>
 
 #include <QtSql>
-#include <QString>к
+#include <QString>
 #include <QCompleter>
 
 #include <QStringListModel>
 #include "db.h"
 #include "db-settings-form.h"
+#include "statisticsfrom.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,8 +25,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_clicked();
-
     void on_updateButton_clicked();
 
     void on_createDBButton_clicked();
@@ -34,24 +33,16 @@ private slots:
 
     void on_settingsPushButton_clicked();
 
-    void on_productNameEdit_returnPressed();
+    void resizeEvent(QResizeEvent* event);
 
-    void on_storeNameEdit_returnPressed();
-
-    void on_countEdit_returnPressed();
-
-    void on_priceEdit_returnPressed();
-
-    void on_currencyEdit_returnPressed();
-
-    void on_categoryEdit_returnPressed();
-
-    void on_discountEdit_returnPressed();
-
-    void on_dateEdit_returnPressed();
+    void on_insertPushButton_clicked();
 
 private:
     void autoCompleteModelForField(const QString field, QStringListModel& completerModel);
+    void resizeTableView();
+    void readSettings(QString settingsFileName);
+    void updateTableView();
+    void insert();
 
     Ui::MainWindow *ui;
 
@@ -60,7 +51,8 @@ private:
     QCompleter _productCompleter, _storeCompleter, _categoryCompleter;
     QStringListModel _productCompleterModel, _storeCompleterModel, _categoryCompleterModel;
 
-    DBSettingsForm _dbsettingsform;
+    DBSettingsForm _dbsettingsForm;
+    StatisticsFrom _statisticsForm;
 };
 
 #endif // MAINWINDOW_H
