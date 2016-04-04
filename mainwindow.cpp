@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QCompleter>
 #include <QSettings>
+#include <QDesktopWidget>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -36,6 +37,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     updateTableView();
 
+    QDesktopWidget desktop;
+    QRect rect = desktop.availableGeometry(desktop.primaryScreen()); // прямоугольник с размерами экрана
+    QPoint center = rect.center(); //координаты центра экрана
+
+    _statisticsForm.setGeometry(
+                center.x() + geometry().width() / 2 + 20,
+                center.y() - geometry().height() / 2,
+                300,
+                300);
     _statisticsForm.show();
 }
 
