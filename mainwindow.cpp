@@ -169,7 +169,7 @@ void MainWindow::resizeTableView()
     tableView->verticalHeader()->setDefaultSectionSize(20);
     tableView->verticalHeader()->hide();
 
-    float width = this->width() / 100.0f - 1.26;
+    float width = this->width() / 100.0f - 1.5;
     tableView->setColumnWidth(0, round(width * 4));
     tableView->setColumnWidth(1, round(width * 20));
     tableView->setColumnWidth(2, round(width * 20));
