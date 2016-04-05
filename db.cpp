@@ -7,12 +7,11 @@
 
 DB::DB()
 {
-    _model = nullptr;
 }
 
 DB::~DB()
 {
-
+    _sdb.close();
 }
 
 void DB::init(QString dbFileName)
@@ -24,10 +23,12 @@ void DB::init(QString dbFileName)
     connect();
 }
 
-void DB::connect()
+void DB::create(QString dbFileName)
 {
     _sdb = QSqlDatabase::addDatabase("QSQLITE");
-    _sdb.setDatabaseName(_dbFileName);
+    _sdb.setDatabaseName(dbFileName);
+
+    executeSqlQuery(Queries::createDB);
 }
 
 void DB::executeSqlQuery(const QStringList &queryString)
@@ -40,40 +41,35 @@ void DB::executeSqlQuery(const QStringList &queryString)
 
 QSharedPointer<QSqlQuery> DB::executeSqlQuery(const QString &queryString)
 {
-    if (!_sdb.open())
-        return QSharedPointer<QSqlQuery>(nullptr);
-
-    QSharedPointer<QSqlQuery> query(new QSqlQuery);
-    query->prepare(queryString);
-
-    qDebug() << query->exec();
-
+    auto query = executeWithoutCommit(queryString);
     _sdb.commit();
     return query;
 }
 
-std::shared_ptr<QSqlRelationalTableModel> DB::model(QObject *parent)
+QSharedPointer<QSqlQuery> DB::select(const QString &queryString)
 {
-    _sdb.open();
-
-    _model.reset();
-    _model = std::shared_ptr<QSqlRelationalTableModel>(new QSqlRelationalTableModel(parent, _sdb));
-
-    _model->setEditStrategy(QSqlTableModel::OnFieldChange);
-    _model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
-    _model->setTable("Purchases");
-    _model->select();
-
-    return _model;
+    return executeWithoutCommit(queryString);
 }
 
-void DB::create(QString dbFileName)
+
+QSqlDatabase& DB::sdb()
+{
+    _sdb.open();
+    return _sdb;
+}
+
+void DB::connect()
 {
     _sdb = QSqlDatabase::addDatabase("QSQLITE");
-    _sdb.setDatabaseName(dbFileName);
+    _sdb.setDatabaseName(_dbFileName);
+    _sdb.open();
+}
 
-    if (!_sdb.open())
-        return;
+QSharedPointer<QSqlQuery> DB::executeWithoutCommit(const QString &queryString)
+{
+    QSharedPointer<QSqlQuery> query(new QSqlQuery);
+    query->prepare(queryString);
 
-    executeSqlQuery(Queries::createDB);
+    qDebug() << query->exec();
+    return query;
 }

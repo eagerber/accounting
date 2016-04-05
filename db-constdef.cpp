@@ -24,8 +24,12 @@ const QString Queries::price = "Price";
 const QString Queries::category = "Category";
 const QString Queries::date = "Date";
 
+const QString Queries::sumOnCategories =
+"SELECT Category, SUM(Count * Price)\n\
+FROM Purchases \n\
+GROUP BY Category;";
 
-const QString Queries::distinctPurchases(QString field)
+const QString Queries::distinctField(QString field)
 {
     QString queryString = "SELECT DISTINCT [%1] FROM " + purchasesTable + ";";
 

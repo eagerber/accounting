@@ -22,14 +22,16 @@ public:
     void executeSqlQuery(const QStringList &queryString);
     QSharedPointer<QSqlQuery> executeSqlQuery(const QString &queryString);
 
-    std::shared_ptr<QSqlRelationalTableModel> model(QObject *parent);
+    QSharedPointer<QSqlQuery> select(const QString &queryString);
+
+    QSqlDatabase& sdb();
 
 private:
     void connect();
+    QSharedPointer<QSqlQuery> executeWithoutCommit(const QString &queryString);
 
     QSqlDatabase _sdb;
     QString _dbFileName;
-    std::shared_ptr<QSqlRelationalTableModel> _model;
 };
 
 #endif // DATABASE_H

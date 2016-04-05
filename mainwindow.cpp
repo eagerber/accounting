@@ -13,7 +13,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     _dbsettingsForm(this),
-    _statisticsForm(this),
+    _statisticsForm(_db, this),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -100,11 +100,55 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 void MainWindow::on_insertPushButton_clicked()
 {
     insert();
+    ui->productNameEdit->setFocus();
+    ui->productNameEdit->selectAll();
+
+    updateTableView();
+}
+
+void MainWindow::on_productNameEdit_returnPressed()
+{
+    on_insertPushButton_clicked();
+}
+
+void MainWindow::on_storeNameEdit_returnPressed()
+{
+    on_insertPushButton_clicked();
+}
+
+void MainWindow::on_countEdit_returnPressed()
+{
+    on_insertPushButton_clicked();
+}
+
+void MainWindow::on_priceEdit_returnPressed()
+{
+    on_insertPushButton_clicked();
+}
+
+void MainWindow::on_currencyEdit_returnPressed()
+{
+    on_insertPushButton_clicked();
+}
+
+void MainWindow::on_categoryEdit_returnPressed()
+{
+    on_insertPushButton_clicked();
+}
+
+void MainWindow::on_discountEdit_returnPressed()
+{
+    on_insertPushButton_clicked();
+}
+
+void MainWindow::on_dateEdit_returnPressed()
+{
+    on_insertPushButton_clicked();
 }
 
 void MainWindow::autoCompleteModelForField(const QString field, QStringListModel &completerModel)
 {
-    QString queryString = Queries::distinctPurchases(field);
+    QString queryString = Queries::distinctField(field);
     auto query = _db.executeSqlQuery(queryString);
 
     if(query.isNull())
@@ -117,7 +161,6 @@ void MainWindow::autoCompleteModelForField(const QString field, QStringListModel
     }
     completerModel.setStringList(list);
 }
-
 
 void MainWindow::resizeTableView()
 {
@@ -147,8 +190,14 @@ void MainWindow::readSettings(QString settingsFileName)
 
 void MainWindow::updateTableView()
 {
-    auto model = _db.model(this);
-    ui->tableView->setModel(model.get());
+    auto model = new QSqlRelationalTableModel(this, _db.sdb());
+
+    model->setEditStrategy(QSqlTableModel::OnFieldChange);
+    model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
+    model->setTable(Queries::purchasesTable);
+    model->select();
+
+    ui->tableView->setModel(model);
 
     resizeTableView();
 }
@@ -163,13 +212,10 @@ void MainWindow::insert()
         ui->categoryEdit->text(),
         ui->dateEdit->text());
 
-    qDebug() << "WTF!!!!!!!!";
     qDebug() << queryString;
     _db.executeSqlQuery(queryString);
 
     autoCompleteModelForField(Queries::product, _productCompleterModel);
     autoCompleteModelForField(Queries::store, _storeCompleterModel);
     autoCompleteModelForField(Queries::category, _categoryCompleterModel);
-
-    ui->productNameEdit->setFocus();
 }

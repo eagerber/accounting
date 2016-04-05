@@ -37,6 +37,22 @@ private slots:
 
     void on_insertPushButton_clicked();
 
+    void on_productNameEdit_returnPressed();
+
+    void on_storeNameEdit_returnPressed();
+
+    void on_countEdit_returnPressed();
+
+    void on_priceEdit_returnPressed();
+
+    void on_currencyEdit_returnPressed();
+
+    void on_categoryEdit_returnPressed();
+
+    void on_discountEdit_returnPressed();
+
+    void on_dateEdit_returnPressed();
+
 private:
     void autoCompleteModelForField(const QString field, QStringListModel& completerModel);
     void resizeTableView();

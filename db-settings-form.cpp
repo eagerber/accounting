@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QTextStream>
 
+
 DBSettingsForm::DBSettingsForm(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DBSettingsForm)
