@@ -12,9 +12,9 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
+    ui(new Ui::MainWindow),
     _dbsettingsForm(this),
-    _statisticsForm(_db, this),
-    ui(new Ui::MainWindow)
+    _statisticsForm(_db, this)
 {
     ui->setupUi(this);
 

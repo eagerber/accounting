@@ -17,12 +17,21 @@
    <item row="0" column="0">
     <widget class="QPushButton" name="showPlotButton">
      <property name="text">
-      <string>PushButton</string>
+      <string>Sun On Category</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QCustomPlot" name="widget" native="true"/>
+   <item row="0" column="1">
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>Price On Product</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QCustomPlot" name="widget" native="true">
+     <zorder>horizontalLayoutWidget</zorder>
+    </widget>
    </item>
   </layout>
  </widget>

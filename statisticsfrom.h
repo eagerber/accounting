@@ -24,6 +24,8 @@ public:
 private slots:
     void on_showPlotButton_clicked();
 
+    void on_pushButton_clicked();
+
 private:
     void setupXAxis(QVector<double> ticks, QVector<QString> labels);
     void setupYAxis(double minValue, double maxValue);
