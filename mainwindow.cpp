@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QString settingsFileName = QDir::current().filePath("settings.ini");
     readSettings(settingsFileName);
 
-    updateTableView();
+    updateView();
 
     QDesktopWidget desktop;
     QRect rect = desktop.availableGeometry(desktop.primaryScreen()); // прямоугольник с размерами экрана
@@ -56,7 +56,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_updateButton_clicked()
 {
-    updateTableView();
+    updateView();
 }
 
 void MainWindow::on_createDBButton_clicked()
@@ -103,7 +103,7 @@ void MainWindow::on_insertPushButton_clicked()
     ui->productNameEdit->setFocus();
     ui->productNameEdit->selectAll();
 
-    updateTableView();
+    updateView();
 }
 
 void MainWindow::on_productNameEdit_returnPressed()
@@ -188,7 +188,7 @@ void MainWindow::readSettings(QString settingsFileName)
     _db.init(dbFileName);
 }
 
-void MainWindow::updateTableView()
+void MainWindow::updateView()
 {
     auto model = new QSqlRelationalTableModel(this, _db.sdb());
 
@@ -198,6 +198,10 @@ void MainWindow::updateTableView()
     model->select();
 
     ui->tableView->setModel(model);
+
+    autoCompleteModelForField(Queries::product, _productCompleterModel);
+    autoCompleteModelForField(Queries::store, _storeCompleterModel);
+    autoCompleteModelForField(Queries::category, _categoryCompleterModel);
 
     resizeTableView();
 }

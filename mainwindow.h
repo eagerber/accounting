@@ -12,6 +12,7 @@
 #include "db-settings-form.h"
 #include "statisticsfrom.h"
 
+
 namespace Ui {
 class MainWindow;
 }
@@ -57,7 +58,7 @@ private:
     void autoCompleteModelForField(const QString field, QStringListModel& completerModel);
     void resizeTableView();
     void readSettings(QString settingsFileName);
-    void updateTableView();
+    void updateView();
     void insert();
 
     Ui::MainWindow *ui;
