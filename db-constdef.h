@@ -20,6 +20,9 @@ public:
     static const QString date;
 
     static const QString sumOnCategories;
+    static const QString prudctsPrice;
+    static const QString consumptionByMonth;
+    static const QString distinctProductCount;
 
     static const QString distinctField(QString field);
 

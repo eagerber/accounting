@@ -65,43 +65,77 @@ void StatisticsFrom::on_showPlotButton_clicked()
 
 void StatisticsFrom::on_pushButton_clicked()
 {
+    auto query = _db.select(Queries::consumptionByMonth);
+
     auto &customPlot = ui->widget;
     customPlot->clearPlottables();
 
-    QVector<double> datax = QVector<double>() << 1 << 2 << 3 << 4;
-    QVector<double> datay1 = QVector<double>() << 0.6 << 0.5 << 0.3 << 0.15;
-    QVector<double> datay2 = QVector<double>() << 0.3 << 0.28 << 0.2 << 0.1;
-    QVector<double> datay3 = QVector<double>() << 0.33 << 0.31 << 0.27 << 0.13;
+    // Add data:
+    QVector<double> consumptionData;
+    QVector<double> ticks;
+    QVector<QString> labels;
+    QVector<double> time;
+    double minValue = std::numeric_limits<double>::max(),
+           maxValue = std::numeric_limits<double>::min(),
+           minTime  = std::numeric_limits<double>::max(),
+           maxTime  = std::numeric_limits<double>::min();
 
-    QCPBarsGroup *group1 = new QCPBarsGroup(customPlot);
-    QCPBars *bars;
-    bars = new QCPBars(customPlot->xAxis, customPlot->yAxis);
-    customPlot->addPlottable(bars);
-    bars->setData(datax, datay1);
-    bars->setBrush(QColor(0, 0, 255, 50));
-    bars->setPen(QColor(0, 0, 255));
-    bars->setWidth(0.15);
-    bars->setBarsGroup(group1);
-    bars = new QCPBars(customPlot->xAxis, customPlot->yAxis);
-    customPlot->addPlottable(bars);
-    bars->setData(datax, datay2);
-    bars->setBrush(QColor(180, 00, 120, 50));
-    bars->setPen(QColor(180, 00, 120));
-    bars->setWidth(0.15);
-    bars->setBarsGroup(group1);
-    bars = new QCPBars(customPlot->xAxis, customPlot->yAxis);
-    customPlot->addPlottable(bars);
-    bars->setData(datax, datay3);
-    bars->setBrush(QColor(255, 154, 0, 50));
-    bars->setPen(QColor(255, 154, 0));
-    bars->setWidth(0.15);
-    bars->setBarsGroup(group1);
+    int count = 0;
+    while(query->next())
+    {
+        double value = query->value(0).toDouble();
+        consumptionData << value;
+        minValue = qMin(minValue, value);
+        maxValue = qMax(maxValue, value);
 
-    customPlot->xAxis->setRange(0.1, 4.9);
-    customPlot->yAxis->setRange(0, 0.7);
+        QString dateString = query->value(1).toString() + "-" + query->value(2).toString();
+        labels << dateString;
+        double currentTime = QDateTime::fromString(dateString, "yyyy-MM").toTime_t();
+        time << currentTime;
+
+        minTime = qMin(minTime, currentTime);
+        maxTime = qMax(maxTime, currentTime);
+        ticks << ++count;
+    }
+
+    customPlot->setLocale(QLocale(QLocale::English, QLocale::UnitedKingdom));
+
+    customPlot->addGraph();
+    QPen pen;
+    pen.setColor(QColor(0, 0, 255, 200));
+    customPlot->graph()->setLineStyle(QCPGraph::lsLine);
+    customPlot->graph()->setPen(pen);
+    customPlot->graph()->setBrush(QBrush(QColor(255,160,50,150)));
+
+    customPlot->graph()->setData(time, consumptionData);
+
+    customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
+    customPlot->xAxis->setDateTimeFormat("MMMM\nyyyy");
+    customPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
+    customPlot->xAxis->setTickLabelRotation(60);
+    customPlot->xAxis->setTickStep(2628000);
     customPlot->xAxis->setAutoTickStep(false);
-    customPlot->xAxis->setTickStep(1);
+    customPlot->xAxis->setSubTickCount(3);
+    customPlot->xAxis->setLabel("Date");
+    customPlot->xAxis->setRange(minTime, maxTime);
 
+    customPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
+    customPlot->yAxis->setAutoTicks(false);
+    customPlot->yAxis->setAutoTickLabels(false);
+    customPlot->yAxis->setTickVector(QVector<double>() << minValue << maxValue - minValue);
+    customPlot->yAxis->setTickVectorLabels(QVector<QString>() << "Not so\nhigh" << "Very\nhigh");
+    customPlot->yAxis->setLabel("Consumptions By Month");
+    customPlot->xAxis2->setVisible(true);
+    customPlot->yAxis2->setVisible(true);
+    customPlot->xAxis2->setTicks(false);
+    customPlot->yAxis2->setTicks(false);
+    customPlot->xAxis2->setTickLabels(false);
+    customPlot->yAxis2->setTickLabels(false);
+    customPlot->yAxis->setRange(minValue, maxValue);
+
+    setupLegend();
+
+    customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     customPlot->replot();
 }
 

@@ -29,6 +29,20 @@ const QString Queries::sumOnCategories =
 FROM Purchases \n\
 GROUP BY Category;";
 
+const QString Queries::prudctsPrice =
+"SELECT Product, Store, Price, Date\n\
+FROM Purchases\n\
+GROUP BY Product, Store, Price;";
+
+const QString Queries::consumptionByMonth =
+"SELECT Sum(Count * Price), strftime('%Y', Date), strftime('%m', Date)\n\
+FROM Purchases\n\
+GROUP BY strftime('%Y', Date), strftime('%m', Date);";
+
+const QString Queries::distinctProductCount =
+"SELECT COUNT(DISTINCT Product)\n\
+FROM Purchases;";
+
 const QString Queries::distinctField(QString field)
 {
     QString queryString = "SELECT DISTINCT [%1] FROM " + purchasesTable + ";";
