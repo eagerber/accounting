@@ -20,19 +20,19 @@ SOURCES += main.cpp\
     db.cpp \
     db-settings-form.cpp \
     db-constdef.cpp \
-    statisticsfrom.cpp \
     qcustomplot.cpp \
-    sumoncategoriesplot.cpp \
-    consumptionbymonth.cpp
+    statistics-from.cpp \
+    plots/sum-on-categoriesplot.cpp \
+    plots/consumption-by-month.cpp
 
 HEADERS  += mainwindow.h \
     db.h \
     db-settings-form.h \
     db-constdef.h \
-    statisticsfrom.h \
     qcustomplot.h \
-    sumoncategoriesplot.h \
-    consumptionbymonth.h
+    statistics-from.h \
+    plots/consumption-by-month.h \
+    plots/sum-on-categories-plot.h
 
 FORMS    += mainwindow.ui \
     dbsettingsform.ui \

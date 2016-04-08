@@ -10,7 +10,7 @@
 #include <QStringListModel>
 #include "db.h"
 #include "db-settings-form.h"
-#include "statisticsfrom.h"
+#include "statistics-from.h"
 
 
 namespace Ui {

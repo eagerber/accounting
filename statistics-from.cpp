@@ -1,11 +1,11 @@
-#include "statisticsfrom.h"
+#include "statistics-from.h"
 #include "ui_statisticsfrom.h"
 
 #include "qcustomplot.h"
 #include "db-constdef.h"
 
-#include "sumoncategoriesplot.h"
-#include "consumptionbymonth.h"
+#include "plots/consumption-by-month.h"
+#include "plots/sum-on-categories-plot.h"
 
 StatisticsFrom::StatisticsFrom(DB &db, QWidget *parent) :
     QDialog(parent),

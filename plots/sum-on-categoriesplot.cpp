@@ -1,4 +1,4 @@
-#include "sumoncategoriesplot.h"
+#include "sum-on-categories-plot.h"
 
 #include "db-constdef.h"
 

@@ -1,4 +1,4 @@
-#include "consumptionbymonth.h"
+#include "consumption-by-month.h"
 
 #include "db-constdef.h"
 
@@ -14,6 +14,10 @@ void ConsumptionByMonth::replot()
     auto query = _db.select(Queries::consumptionByMonth);
 
     _customPlot->clearPlottables();
+    _customPlot->clearGraphs();
+    _customPlot->clearItems();
+    _customPlot->clearMask();
+    _customPlot->clearFocus();
 
     // Add data:
     QVector<double> consumptionData;
@@ -51,7 +55,6 @@ void ConsumptionByMonth::replot()
     _customPlot->graph()->setLineStyle(QCPGraph::lsLine);
     _customPlot->graph()->setPen(pen);
     _customPlot->graph()->setBrush(QBrush(QColor(255,160,50,150)));
-
     _customPlot->graph()->setData(time, consumptionData);
 
     _customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
@@ -61,7 +64,6 @@ void ConsumptionByMonth::replot()
     _customPlot->xAxis->setTickStep(2628000);
     _customPlot->xAxis->setAutoTickStep(false);
     _customPlot->xAxis->setSubTickCount(3);
-    _customPlot->xAxis->setLabel("Date");
     _customPlot->xAxis->setRange(minTime, maxTime);
 
     _customPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));

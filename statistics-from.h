@@ -22,9 +22,9 @@ public:
     void updatePlot();
 
 private slots:
-    void on_showPlotButton_clicked();
+    void on_sumOnCategoryButton_clicked();
 
-    void on_pushButton_clicked();
+    void on_consumptionByMonthPushButton_clicked();
 
 private:
     void setupXAxis(QVector<double> ticks, QVector<QString> labels);

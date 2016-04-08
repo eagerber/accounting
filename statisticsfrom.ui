@@ -15,23 +15,21 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QPushButton" name="showPlotButton">
+    <widget class="QPushButton" name="sumOnCategoryButton">
      <property name="text">
-      <string>Sun On Category</string>
+      <string>Sum On Category</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="consumptionByMonthPushButton">
      <property name="text">
       <string>Price On Product</string>
      </property>
     </widget>
    </item>
    <item row="1" column="0" colspan="2">
-    <widget class="QCustomPlot" name="widget" native="true">
-     <zorder>horizontalLayoutWidget</zorder>
-    </widget>
+    <widget class="QCustomPlot" name="widget" native="true"/>
    </item>
   </layout>
  </widget>
