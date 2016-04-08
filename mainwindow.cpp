@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QString settingsFileName = QDir::current().filePath("settings.ini");
     readSettings(settingsFileName);
 
-    updateView();
+    updateTableView();
 
     QDesktopWidget desktop;
     QRect rect = desktop.availableGeometry(desktop.primaryScreen()); // прямоугольник с размерами экрана
@@ -47,6 +47,9 @@ MainWindow::MainWindow(QWidget *parent) :
                 300,
                 300);
     _statisticsForm.show();
+
+    connect(ui->plotAction, &QAction::triggered, this, &MainWindow::plotForm);
+    connect(ui->settingsAction, &QAction::triggered, this, &MainWindow::settingsForm);
 }
 
 MainWindow::~MainWindow()
@@ -56,7 +59,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_updateButton_clicked()
 {
-    updateView();
+    updateTableView();
 }
 
 void MainWindow::on_createDBButton_clicked()
@@ -103,7 +106,7 @@ void MainWindow::on_insertPushButton_clicked()
     ui->productNameEdit->setFocus();
     ui->productNameEdit->selectAll();
 
-    updateView();
+    updateTableView();
 }
 
 void MainWindow::on_productNameEdit_returnPressed()
@@ -144,6 +147,16 @@ void MainWindow::on_discountEdit_returnPressed()
 void MainWindow::on_dateEdit_returnPressed()
 {
     on_insertPushButton_clicked();
+}
+
+void MainWindow::plotForm()
+{
+    reverseViewState(_statisticsForm);
+}
+
+void MainWindow::settingsForm()
+{
+    reverseViewState(_dbsettingsForm);
 }
 
 void MainWindow::autoCompleteModelForField(const QString field, QStringListModel &completerModel)
@@ -188,7 +201,7 @@ void MainWindow::readSettings(QString settingsFileName)
     DB::init(dbFileName);
 }
 
-void MainWindow::updateView()
+void MainWindow::updateTableView()
 {
     auto model = new QSqlRelationalTableModel(this, DB::sdb());
 
@@ -222,4 +235,9 @@ void MainWindow::insert()
     autoCompleteModelForField(Queries::product, _productCompleterModel);
     autoCompleteModelForField(Queries::store, _storeCompleterModel);
     autoCompleteModelForField(Queries::category, _categoryCompleterModel);
+}
+
+void MainWindow::reverseViewState(QDialog &dialog)
+{
+    dialog.isVisible() ? dialog.hide() : dialog.show();
 }

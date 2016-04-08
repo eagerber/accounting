@@ -54,12 +54,17 @@ private slots:
 
     void on_dateEdit_returnPressed();
 
+    void plotForm();
+    void settingsForm();
+
 private:
     void autoCompleteModelForField(const QString field, QStringListModel& completerModel);
     void resizeTableView();
     void readSettings(QString settingsFileName);
-    void updateView();
-    void insert();
+    void updateTableView();
+    void insert();    
+
+    void reverseViewState(QDialog &dialog);
 
     Ui::MainWindow *ui;
 
