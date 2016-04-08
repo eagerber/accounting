@@ -21,14 +21,18 @@ SOURCES += main.cpp\
     db-settings-form.cpp \
     db-constdef.cpp \
     statisticsfrom.cpp \
-    qcustomplot.cpp
+    qcustomplot.cpp \
+    sumoncategoriesplot.cpp \
+    consumptionbymonth.cpp
 
 HEADERS  += mainwindow.h \
     db.h \
     db-settings-form.h \
     db-constdef.h \
     statisticsfrom.h \
-    qcustomplot.h
+    qcustomplot.h \
+    sumoncategoriesplot.h \
+    consumptionbymonth.h
 
 FORMS    += mainwindow.ui \
     dbsettingsform.ui \
