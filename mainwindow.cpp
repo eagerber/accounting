@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     _dbsettingsForm(this),
-    _statisticsForm(_db, this)
+    _statisticsForm(this)
 {
     ui->setupUi(this);
 
@@ -67,7 +67,7 @@ void MainWindow::on_createDBButton_clicked()
     if(dbFileName.isEmpty())
         return;
 
-    _db.create(dbFileName);
+    DB::create(dbFileName);
 }
 
 void MainWindow::on_connectPushButton_clicked()
@@ -78,7 +78,7 @@ void MainWindow::on_connectPushButton_clicked()
     if(dbFileName.isEmpty())
         return;
 
-    _db.init(dbFileName);
+    DB::init(dbFileName);
 
     autoCompleteModelForField("Product", _productCompleterModel);
     autoCompleteModelForField("Store", _storeCompleterModel);
@@ -149,7 +149,7 @@ void MainWindow::on_dateEdit_returnPressed()
 void MainWindow::autoCompleteModelForField(const QString field, QStringListModel &completerModel)
 {
     QString queryString = Queries::distinctField(field);
-    auto query = _db.executeSqlQuery(queryString);
+    auto query = DB::executeSqlQuery(queryString);
 
     if(query.isNull())
         return;
@@ -185,12 +185,12 @@ void MainWindow::readSettings(QString settingsFileName)
     QSettings settings(settingsFileName, QSettings::IniFormat);
 
     QString dbFileName = settings.value("SQLiteDBFileName", "").toString();
-    _db.init(dbFileName);
+    DB::init(dbFileName);
 }
 
 void MainWindow::updateView()
 {
-    auto model = new QSqlRelationalTableModel(this, _db.sdb());
+    auto model = new QSqlRelationalTableModel(this, DB::sdb());
 
     model->setEditStrategy(QSqlTableModel::OnFieldChange);
     model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
@@ -217,7 +217,7 @@ void MainWindow::insert()
         ui->dateEdit->text());
 
     qDebug() << queryString;
-    _db.executeSqlQuery(queryString);
+    DB::executeSqlQuery(queryString);
 
     autoCompleteModelForField(Queries::product, _productCompleterModel);
     autoCompleteModelForField(Queries::store, _storeCompleterModel);

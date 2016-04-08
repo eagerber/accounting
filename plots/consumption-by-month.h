@@ -1,15 +1,13 @@
 #ifndef CONSUMPTIONBYMONTH_H
 #define CONSUMPTIONBYMONTH_H
 
-#include <memory>
-#include "qcustomplot.h"
-#include "db.h"
 
+class QCustomPlot;
 
 class ConsumptionByMonth
 {
 public:
-    explicit ConsumptionByMonth(DB &db, QCustomPlot *customPlot);
+    explicit ConsumptionByMonth(QCustomPlot *customPlot);
     ~ConsumptionByMonth() = default;
 
     void replot();
@@ -19,6 +17,5 @@ private:
     void setupLegend();
 
     QCustomPlot *_customPlot;
-    DB &_db;
 };
 #endif // CONSUMPTIONBYMONTH_H

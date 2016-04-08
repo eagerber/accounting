@@ -10,28 +10,30 @@
 #include <memory>
 
 
+class DbImplementation;
+
 class DB
 {
 public:
-    DB();
-    ~DB();
 
-    void init(QString dbFileName);
-    void create(QString dbFileName);
+    static void init(QString dbFileName);
+    static void create(QString dbFileName);
 
-    void executeSqlQuery(const QStringList &queryString);
-    QSharedPointer<QSqlQuery> executeSqlQuery(const QString &queryString);
+    static void executeSqlQuery(const QStringList &queryString);
+    static QSharedPointer<QSqlQuery> executeSqlQuery(const QString &queryString);
 
-    QSharedPointer<QSqlQuery> select(const QString &queryString);
+    static QSharedPointer<QSqlQuery> select(const QString &queryString);
 
-    QSqlDatabase& sdb();
+    static QSqlDatabase& sdb();
 
 private:
-    void connect();
-    QSharedPointer<QSqlQuery> executeWithoutCommit(const QString &queryString);
+    DB() = delete;
+    ~DB() = delete;
 
-    QSqlDatabase _sdb;
-    QString _dbFileName;
+    static DbImplementation* instance();
+    static void connect();
+    static QSharedPointer<QSqlQuery> executeWithoutCommit(const QString &queryString);
 };
+
 
 #endif // DATABASE_H

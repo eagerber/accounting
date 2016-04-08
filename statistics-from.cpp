@@ -7,10 +7,9 @@
 #include "plots/consumption-by-month.h"
 #include "plots/sum-on-categories-plot.h"
 
-StatisticsFrom::StatisticsFrom(DB &db, QWidget *parent) :
+StatisticsFrom::StatisticsFrom(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::StatisticsFrom),
-    _db(db)
+    ui(new Ui::StatisticsFrom)
 {
     ui->setupUi(this);
 }
@@ -22,13 +21,13 @@ StatisticsFrom::~StatisticsFrom()
 
 void StatisticsFrom::on_sumOnCategoryButton_clicked()
 {
-    SumOnCategoriesPlot plot(_db, ui->widget);
+    SumOnCategoriesPlot plot(ui->widget);
     plot.replot();
 }
 
 void StatisticsFrom::on_consumptionByMonthPushButton_clicked()
 {
-    ConsumptionByMonth plot(_db, ui->widget);
+    ConsumptionByMonth plot(ui->widget);
     plot.replot();
 
 }

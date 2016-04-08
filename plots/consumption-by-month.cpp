@@ -1,17 +1,18 @@
 #include "consumption-by-month.h"
 
+#include "qcustomplot.h"
 #include "db-constdef.h"
+#include "db.h"
 
 
-ConsumptionByMonth::ConsumptionByMonth(DB &db, QCustomPlot *customPlot)
-    : _db(db)
+ConsumptionByMonth::ConsumptionByMonth(QCustomPlot *customPlot)
 {
     _customPlot = customPlot;
 }
 
 void ConsumptionByMonth::replot()
 {
-    auto query = _db.select(Queries::consumptionByMonth);
+    auto query = DB::select(Queries::consumptionByMonth);
 
     _customPlot->clearPlottables();
     _customPlot->clearGraphs();

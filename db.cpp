@@ -5,71 +5,103 @@
 #include "db-constdef.h"
 
 
-DB::DB()
+class DbImplementation
 {
-}
+public:
+    void init(QString dbFileName)
+    {
+        if(dbFileName.isEmpty())
+            return;
+        _dbFileName = dbFileName;
 
-DB::~DB()
-{
-    _sdb.close();
-}
+        connect();
+    }
+    void create(QString dbFileName)
+    {
+        _sdb = QSqlDatabase::addDatabase("QSQLITE");
+        _sdb.setDatabaseName(dbFileName);
+
+        executeSqlQuery(Queries::createDB);
+    }
+
+    void executeSqlQuery(const QStringList &queryString)
+    {
+        for(const auto &item : queryString)
+        {
+            executeSqlQuery(item);
+        }
+    }
+    QSharedPointer<QSqlQuery> executeSqlQuery(const QString &queryString)
+    {
+        auto query = executeWithoutCommit(queryString);
+        _sdb.commit();
+        return query;
+    }
+
+    QSharedPointer<QSqlQuery> select(const QString &queryString)
+    {
+        return executeWithoutCommit(queryString);
+    }
+
+    QSqlDatabase& sdb()
+    {
+        _sdb.open();
+        return _sdb;
+    }
+
+private:
+    void connect()
+    {
+        _sdb = QSqlDatabase::addDatabase("QSQLITE");
+        _sdb.setDatabaseName(_dbFileName);
+        _sdb.open();
+    }
+    QSharedPointer<QSqlQuery> executeWithoutCommit(const QString &queryString)
+    {
+        QSharedPointer<QSqlQuery> query(new QSqlQuery);
+        query->prepare(queryString);
+
+        qDebug() << query->exec();
+        return query;
+    }
+
+    QSqlDatabase _sdb;
+    QString _dbFileName;
+};
 
 void DB::init(QString dbFileName)
 {
-    if(dbFileName.isEmpty())
-        return;
-    _dbFileName = dbFileName;
-
-    connect();
+    instance()->init(dbFileName);
 }
 
 void DB::create(QString dbFileName)
 {
-    _sdb = QSqlDatabase::addDatabase("QSQLITE");
-    _sdb.setDatabaseName(dbFileName);
-
-    executeSqlQuery(Queries::createDB);
+    instance()->create(dbFileName);
 }
 
 void DB::executeSqlQuery(const QStringList &queryString)
 {
-    for(const auto &item : queryString)
-    {
-        executeSqlQuery(item);
-    }
+    instance()->executeSqlQuery(queryString);
 }
 
 QSharedPointer<QSqlQuery> DB::executeSqlQuery(const QString &queryString)
 {
-    auto query = executeWithoutCommit(queryString);
-    _sdb.commit();
-    return query;
+    return instance()->executeSqlQuery(queryString);
 }
 
 QSharedPointer<QSqlQuery> DB::select(const QString &queryString)
 {
-    return executeWithoutCommit(queryString);
+    return instance()->executeSqlQuery(queryString);
 }
-
 
 QSqlDatabase& DB::sdb()
 {
-    _sdb.open();
-    return _sdb;
+    return instance()->sdb();
 }
 
-void DB::connect()
+DbImplementation* DB::instance()
 {
-    _sdb = QSqlDatabase::addDatabase("QSQLITE");
-    _sdb.setDatabaseName(_dbFileName);
-    _sdb.open();
+    static DbImplementation* implementation = new DbImplementation();
+    return implementation;
 }
 
-QSharedPointer<QSqlQuery> DB::executeWithoutCommit(const QString &queryString)
-{
-    QSharedPointer<QSqlQuery> query(new QSqlQuery);
-    query->prepare(queryString);
-
-    qDebug() << query->exec();
-    return query;
-}

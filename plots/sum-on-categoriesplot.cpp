@@ -1,10 +1,11 @@
 #include "sum-on-categories-plot.h"
 
+#include "qcustomplot.h"
 #include "db-constdef.h"
+#include "db.h"
 
 
-SumOnCategoriesPlot::SumOnCategoriesPlot(DB &db, QCustomPlot *customPlot)
-    : _db(db)
+SumOnCategoriesPlot::SumOnCategoriesPlot(QCustomPlot *customPlot)
 {
     _customPlot = customPlot;
 }
@@ -12,7 +13,7 @@ SumOnCategoriesPlot::SumOnCategoriesPlot(DB &db, QCustomPlot *customPlot)
 void SumOnCategoriesPlot::replot()
 {
     QString queryString = Queries::sumOnCategories;
-    auto query = _db.select(queryString);
+    auto query = DB::select(queryString);
 
     _customPlot->clearPlottables();
 

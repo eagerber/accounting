@@ -1,15 +1,15 @@
 #ifndef SUMONCATEGORIESPLOT_H
 #define SUMONCATEGORIESPLOT_H
 
-#include <memory>
-#include "qcustomplot.h"
-#include "db.h"
+#include <QVector>
 
+
+class QCustomPlot;
 
 class SumOnCategoriesPlot
 {
 public:
-    explicit SumOnCategoriesPlot(DB &db, QCustomPlot *customPlot);
+    explicit SumOnCategoriesPlot(QCustomPlot *customPlot);
     ~SumOnCategoriesPlot() = default;
 
     void replot();
@@ -21,7 +21,6 @@ private:
     void setupLegend();
 
     QCustomPlot *_customPlot;
-    DB &_db;
 };
 
 #endif // SUMONCATEGORIESPLOT_H

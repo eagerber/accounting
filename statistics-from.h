@@ -16,7 +16,7 @@ class StatisticsFrom : public QDialog
     Q_OBJECT
 
 public:
-    explicit StatisticsFrom(DB &db, QWidget *parent = 0);
+    explicit StatisticsFrom(QWidget *parent = 0);
     ~StatisticsFrom();
 
     void updatePlot();
@@ -32,7 +32,6 @@ private:
     void setupLegend();
 
     Ui::StatisticsFrom *ui;
-    DB &_db;
 };
 
 #endif // STATISTICSFROM_H

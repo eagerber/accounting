@@ -63,8 +63,6 @@ private:
 
     Ui::MainWindow *ui;
 
-    DB _db;
-
     QCompleter _productCompleter, _storeCompleter, _categoryCompleter;
     QStringListModel _productCompleterModel, _storeCompleterModel, _categoryCompleterModel;
 
