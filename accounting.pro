@@ -22,8 +22,8 @@ SOURCES += main.cpp\
     db-constdef.cpp \
     qcustomplot.cpp \
     statistics-from.cpp \
-    plots/sum-on-categoriesplot.cpp \
-    plots/consumption-by-month.cpp
+    plots/consumption-by-month.cpp \
+    plots/sum-on-categories-plot.cpp
 
 HEADERS  += mainwindow.h \
     db.h \

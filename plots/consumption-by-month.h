@@ -1,6 +1,7 @@
 #ifndef CONSUMPTIONBYMONTH_H
 #define CONSUMPTIONBYMONTH_H
 
+#include <QVector>
 
 class QCustomPlot;
 
@@ -14,6 +15,8 @@ public:
 
 private:
     ConsumptionByMonth() = default;
+    void setupXAxis(double minTime, double maxTime);
+    void setupYAxis(double minValue, double maxValue);
     void setupLegend();
 
     QCustomPlot *_customPlot;

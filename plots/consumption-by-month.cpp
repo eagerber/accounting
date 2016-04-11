@@ -58,33 +58,49 @@ void ConsumptionByMonth::replot()
     _customPlot->graph()->setBrush(QBrush(QColor(255,160,50,150)));
     _customPlot->graph()->setData(time, consumptionData);
 
-    _customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
-    _customPlot->xAxis->setDateTimeFormat("MMMM\nyyyy");
-    _customPlot->xAxis->setTickLabelFont(QFont(QFont().family(), 8));
-    _customPlot->xAxis->setTickLabelRotation(60);
-    _customPlot->xAxis->setTickStep(2628000);
-    _customPlot->xAxis->setAutoTickStep(false);
-    _customPlot->xAxis->setSubTickCount(3);
-    _customPlot->xAxis->setRange(minTime, maxTime);
-
-    _customPlot->yAxis->setTickLabelFont(QFont(QFont().family(), 8));
-    _customPlot->yAxis->setAutoTicks(false);
-    _customPlot->yAxis->setAutoTickLabels(false);
-    _customPlot->yAxis->setTickVector(QVector<double>() << minValue << maxValue - minValue);
-    _customPlot->yAxis->setTickVectorLabels(QVector<QString>() << "Not so\nhigh" << "Very\nhigh");
-    _customPlot->yAxis->setLabel("Consumptions By Month");
-    _customPlot->xAxis2->setVisible(true);
-    _customPlot->yAxis2->setVisible(true);
-    _customPlot->xAxis2->setTicks(false);
-    _customPlot->yAxis2->setTicks(false);
-    _customPlot->xAxis2->setTickLabels(false);
-    _customPlot->yAxis2->setTickLabels(false);
-    _customPlot->yAxis->setRange(minValue, maxValue);
+    setupXAxis(minTime, maxTime);
+    setupYAxis(minValue, maxValue);
 
     setupLegend();
 
     _customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     _customPlot->replot();
+}
+
+void ConsumptionByMonth::setupXAxis(double minTime, double maxTime)
+{
+    _customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
+    _customPlot->xAxis->setDateTimeFormat("MMMM\nyyyy");
+
+    _customPlot->xAxis->setAutoTicks(true);
+    _customPlot->xAxis->setAutoTickLabels(true);
+
+    _customPlot->xAxis->setTickLabelRotation(60);
+    _customPlot->xAxis->setTickStep(2628000);
+
+    _customPlot->xAxis->setAutoTickStep(true);
+    _customPlot->xAxis->setSubTickCount(3);
+
+    _customPlot->xAxis->grid()->setVisible(true);
+    _customPlot->xAxis->setRange(minTime, maxTime);
+
+    //_customPlot->xAxis2->setVisible(true);
+    //_customPlot->xAxis2->setTicks(false);
+    //_customPlot->xAxis2->setTickLabels(false);
+}
+
+void ConsumptionByMonth::setupYAxis(double minValue, double maxValue)
+{
+    _customPlot->yAxis->setRange(minValue, maxValue);
+    _customPlot->yAxis->setPadding(5); // a bit more space to the left border
+    _customPlot->yAxis->setLabel("Sum on Categories");
+
+    QPen gridPen;
+    gridPen.setStyle(Qt::SolidLine);
+    gridPen.setColor(QColor(0, 0, 0, 25));
+    _customPlot->yAxis->grid()->setPen(gridPen);
+    gridPen.setStyle(Qt::DotLine);
+    _customPlot->yAxis->grid()->setSubGridPen(gridPen);
 }
 
 void ConsumptionByMonth::setupLegend()

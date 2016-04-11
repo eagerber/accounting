@@ -24,7 +24,7 @@
    <item row="0" column="1">
     <widget class="QPushButton" name="consumptionByMonthPushButton">
      <property name="text">
-      <string>Price On Product</string>
+      <string>Consumption By Month</string>
      </property>
     </widget>
    </item>
