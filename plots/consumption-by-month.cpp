@@ -6,8 +6,8 @@
 
 
 ConsumptionByMonth::ConsumptionByMonth(QCustomPlot *customPlot)
+    : AccPlot(customPlot)
 {
-    _customPlot = customPlot;
 }
 
 void ConsumptionByMonth::replot()
@@ -19,6 +19,8 @@ void ConsumptionByMonth::replot()
     _customPlot->clearItems();
     _customPlot->clearMask();
     _customPlot->clearFocus();
+
+    _customPlot->setLocale(QLocale(QLocale::English, QLocale::UnitedKingdom));
 
     // Add data:
     QVector<double> consumptionData;
@@ -48,8 +50,6 @@ void ConsumptionByMonth::replot()
         ticks << ++count;
     }
 
-    _customPlot->setLocale(QLocale(QLocale::English, QLocale::UnitedKingdom));
-
     _customPlot->addGraph();
     QPen pen;
     pen.setColor(QColor(0, 0, 255, 200));
@@ -74,36 +74,10 @@ void ConsumptionByMonth::setupXAxis(double minTime, double maxTime)
 
     _customPlot->xAxis->setAutoTicks(true);
     _customPlot->xAxis->setAutoTickLabels(true);
-
-    _customPlot->xAxis->setTickLabelRotation(60);
-    _customPlot->xAxis->setTickStep(2628000);
-
     _customPlot->xAxis->setAutoTickStep(true);
+
+    _customPlot->xAxis->setTickStep(2628000);
     _customPlot->xAxis->setSubTickCount(3);
 
-    _customPlot->xAxis->grid()->setVisible(true);
-    _customPlot->xAxis->setRange(minTime, maxTime);
-
-    //_customPlot->xAxis2->setVisible(true);
-    //_customPlot->xAxis2->setTicks(false);
-    //_customPlot->xAxis2->setTickLabels(false);
-}
-
-void ConsumptionByMonth::setupYAxis(double minValue, double maxValue)
-{
-    _customPlot->yAxis->setRange(minValue, maxValue);
-    _customPlot->yAxis->setPadding(5); // a bit more space to the left border
-    _customPlot->yAxis->setLabel("Sum on Categories");
-
-    QPen gridPen;
-    gridPen.setStyle(Qt::SolidLine);
-    gridPen.setColor(QColor(0, 0, 0, 25));
-    _customPlot->yAxis->grid()->setPen(gridPen);
-    gridPen.setStyle(Qt::DotLine);
-    _customPlot->yAxis->grid()->setSubGridPen(gridPen);
-}
-
-void ConsumptionByMonth::setupLegend()
-{
-    _customPlot->legend->setVisible(false);
+    AccPlot::setupXAxis(minTime, maxTime);
 }

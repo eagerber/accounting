@@ -1,26 +1,21 @@
 #ifndef SUMONCATEGORIESPLOT_H
 #define SUMONCATEGORIESPLOT_H
 
+#include "acc-plot.h"
+
 #include <QVector>
 
-
-class QCustomPlot;
-
-class SumOnCategoriesPlot
+class SumOnCategoriesPlot : public AccPlot
 {
 public:
     explicit SumOnCategoriesPlot(QCustomPlot *customPlot);
     ~SumOnCategoriesPlot() = default;
 
-    void replot();
+    virtual void replot() override;
 
 private:
     SumOnCategoriesPlot() = default;
     void setupXAxis(QVector<double> ticks, QVector<QString> labels);
-    void setupYAxis(double minValue, double maxValue);
-    void setupLegend();
-
-    QCustomPlot *_customPlot;
 };
 
 #endif // SUMONCATEGORIESPLOT_H

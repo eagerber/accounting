@@ -1,24 +1,20 @@
 #ifndef CONSUMPTIONBYMONTH_H
 #define CONSUMPTIONBYMONTH_H
 
+#include "acc-plot.h"
+
 #include <QVector>
 
-class QCustomPlot;
-
-class ConsumptionByMonth
+class ConsumptionByMonth : public AccPlot
 {
 public:
     explicit ConsumptionByMonth(QCustomPlot *customPlot);
     ~ConsumptionByMonth() = default;
 
-    void replot();
+    virtual void replot() override;
 
 private:
     ConsumptionByMonth() = default;
     void setupXAxis(double minTime, double maxTime);
-    void setupYAxis(double minValue, double maxValue);
-    void setupLegend();
-
-    QCustomPlot *_customPlot;
 };
 #endif // CONSUMPTIONBYMONTH_H
