@@ -29,6 +29,11 @@ const QString Queries::sumOnCategories =
 FROM Purchases \n\
 GROUP BY Category;";
 
+const QString Queries::sumOnStores =
+"SELECT Store, SUM(Count * Price)\n\
+FROM Purchases \n\
+GROUP BY Store;";
+
 const QString Queries::prudctsPrice =
 "SELECT Product, Store, Price, Date\n\
 FROM Purchases\n\

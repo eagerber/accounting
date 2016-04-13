@@ -23,8 +23,8 @@ SOURCES += main.cpp\
     qcustomplot.cpp \
     statistics-from.cpp \
     plots/consumption-by-month.cpp \
-    plots/sum-on-categories-plot.cpp \
-    plots/acc-plot.cpp
+    plots/acc-plot.cpp \
+    plots/sum-on-plot.cpp
 
 HEADERS  += mainwindow.h \
     db.h \
@@ -33,8 +33,8 @@ HEADERS  += mainwindow.h \
     qcustomplot.h \
     statistics-from.h \
     plots/consumption-by-month.h \
-    plots/sum-on-categories-plot.h \
-    plots/acc-plot.h
+    plots/acc-plot.h \
+    plots/sum-on-plot.h
 
 FORMS    += mainwindow.ui \
     dbsettingsform.ui \

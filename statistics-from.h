@@ -26,6 +26,8 @@ private slots:
 
     void on_consumptionByMonthPushButton_clicked();
 
+    void on_sumOnStoresButton_clicked();
+
 private:
     void setupXAxis(QVector<double> ticks, QVector<QString> labels);
     void setupYAxis(double minValue, double maxValue);

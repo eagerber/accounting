@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
+    <width>438</width>
     <height>300</height>
    </rect>
   </property>
@@ -14,6 +14,9 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0" colspan="4">
+    <widget class="QCustomPlot" name="widget" native="true"/>
+   </item>
    <item row="0" column="0">
     <widget class="QPushButton" name="sumOnCategoryButton">
      <property name="text">
@@ -21,15 +24,19 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
+   <item row="0" column="2">
     <widget class="QPushButton" name="consumptionByMonthPushButton">
      <property name="text">
       <string>Consumption By Month</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QCustomPlot" name="widget" native="true"/>
+   <item row="0" column="1">
+    <widget class="QPushButton" name="sumOnStoresButton">
+     <property name="text">
+      <string>Sum On Stores</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

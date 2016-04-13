@@ -1,19 +1,31 @@
-#include "sum-on-categories-plot.h"
+#include "sum-on-plot.h"
 
 #include "qcustomplot.h"
 #include "db-constdef.h"
 #include "db.h"
 
 
-SumOnCategoriesPlot::SumOnCategoriesPlot(QCustomPlot *customPlot)
+SumOnPlot::SumOnPlot(QCustomPlot *customPlot, PlotType plotType)
     : AccPlot(customPlot)
 {
+    switch(plotType)
+    {
+        case Categories:
+        {
+            _queryString = Queries::sumOnCategories;
+            break;
+        }
+        case Stores:
+        {
+            _queryString = Queries::sumOnStores;
+            break;
+        }
+    }
 }
 
-void SumOnCategoriesPlot::replot()
+void SumOnPlot::replot()
 {
-    QString queryString = Queries::sumOnCategories;
-    auto query = DB::select(queryString);
+    auto query = DB::select(_queryString);
 
     _customPlot->clearPlottables();
     _customPlot->clearGraphs();
@@ -55,7 +67,7 @@ void SumOnCategoriesPlot::replot()
     _customPlot->replot();
 }
 
-void SumOnCategoriesPlot::setupXAxis(QVector<double> ticks, QVector<QString> labels)
+void SumOnPlot::setupXAxis(QVector<double> ticks, QVector<QString> labels)
 {
     _customPlot->xAxis->setTickLabelType(QCPAxis::ltNumber);
 

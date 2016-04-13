@@ -18,9 +18,10 @@ public:
 private slots:
     void on_convertDBButton_clicked();
 
+    void on_createDBButton_clicked();
+
 private:
     Ui::DBSettingsForm *ui;
-    QString _dbFileName;
 };
 
 #endif // DBSETTINGSFORM_H

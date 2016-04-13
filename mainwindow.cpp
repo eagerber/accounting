@@ -62,17 +62,6 @@ void MainWindow::on_updateButton_clicked()
     updateTableView();
 }
 
-void MainWindow::on_createDBButton_clicked()
-{
-    QString dbFileName = QFileDialog::getSaveFileName(
-                this, tr("Choose DB"), "", tr("SQL Lite Files (*.sqldb *.db)"));
-
-    if(dbFileName.isEmpty())
-        return;
-
-    DB::create(dbFileName);
-}
-
 void MainWindow::on_connectPushButton_clicked()
 {
     QString dbFileName = QFileDialog::getOpenFileName(

@@ -1,6 +1,8 @@
 #include "db.h"
 
+#include <QFile>
 #include <QDebug>
+
 
 #include "db-constdef.h"
 
@@ -37,9 +39,11 @@ void DbImplementation::init(QString dbFileName)
 }
 void DbImplementation::create(QString dbFileName)
 {
-    _sdb = QSqlDatabase::addDatabase("QSQLITE");
-    _sdb.setDatabaseName(dbFileName);
+    QFile file(dbFileName);
+    file.open(QIODevice::WriteOnly);
+    file.close();
 
+    init(dbFileName);
     executeSqlQuery(Queries::createDB);
 }
 

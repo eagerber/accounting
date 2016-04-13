@@ -28,8 +28,6 @@ public:
 private slots:
     void on_updateButton_clicked();
 
-    void on_createDBButton_clicked();
-
     void on_connectPushButton_clicked();
 
     void on_settingsPushButton_clicked();

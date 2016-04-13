@@ -3,6 +3,9 @@
 
 #include <QDir>
 #include <QTextStream>
+#include <QFileDialog>
+
+#include "db.h"
 
 
 DBSettingsForm::DBSettingsForm(QWidget *parent) :
@@ -28,9 +31,6 @@ DBSettingsForm::~DBSettingsForm()
 
 void DBSettingsForm::on_convertDBButton_clicked()
 {
-    if(_dbFileName.isEmpty())
-        return;
-
     QDir dir(QCoreApplication::applicationDirPath());
     dir.cd("db-scripts");
 
@@ -44,5 +44,16 @@ void DBSettingsForm::on_convertDBButton_clicked()
     sqlScript.removeLast();
 
     file.close();
-    //executeSqlQuery(sqlScript);
+    DB::executeSqlQuery(sqlScript);
+}
+
+void DBSettingsForm::on_createDBButton_clicked()
+{
+    QString dbFileName = QFileDialog::getSaveFileName(
+                this, tr("Choose DB"), "", tr("SQL Lite Files (*.sqldb *.db)"));
+
+    if(dbFileName.isEmpty())
+        return;
+
+    DB::create(dbFileName);
 }
