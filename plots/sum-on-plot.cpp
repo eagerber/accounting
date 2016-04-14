@@ -1,5 +1,7 @@
 #include "sum-on-plot.h"
 
+#include <QPair>
+
 #include "qcustomplot.h"
 #include "db-constdef.h"
 #include "db.h"
@@ -50,17 +52,18 @@ void SumOnPlot::replot()
     int count = 0;
     while(query->next())
     {
-        labels << query->value(0).toString();
+        labels << query->value(0).toString();        
         double value = query->value(1).toFloat();
         categoriesData << value;
         minValue = qMin(minValue, value);
         maxValue = qMax(maxValue, value);
         ticks << ++count;
     }
-    categories->setData(ticks, categoriesData);
+
+    categories->setData(ticks, categoriesData);    
 
     setupXAxis(ticks, labels);
-    setupYAxis(minValue, maxValue);
+    setupYAxis(0.0, maxValue);
     setupLegend();
 
     _customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);

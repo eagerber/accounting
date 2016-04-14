@@ -25,14 +25,16 @@ const QString Queries::category = "Category";
 const QString Queries::date = "Date";
 
 const QString Queries::sumOnCategories =
-"SELECT Category, SUM(Count * Price)\n\
+"SELECT Category, SUM(Count * Price) sumField\n\
 FROM Purchases \n\
-GROUP BY Category;";
+GROUP BY Category\n\
+ORDER BY sumField DESC;";
 
 const QString Queries::sumOnStores =
-"SELECT Store, SUM(Count * Price)\n\
+"SELECT Store, SUM(Count * Price) sumField\n\
 FROM Purchases \n\
-GROUP BY Store;";
+GROUP BY Store\n\
+ORDER BY sumField DESC;";
 
 const QString Queries::prudctsPrice =
 "SELECT Product, Store, Price, Date\n\
