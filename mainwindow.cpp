@@ -44,12 +44,14 @@ MainWindow::MainWindow(QWidget *parent) :
     _statisticsForm.setGeometry(
                 center.x() + geometry().width() / 2 + 20,
                 center.y() - geometry().height() / 2,
-                300,
-                300);
+                800,
+                500);
     _statisticsForm.show();
 
     connect(ui->plotAction, &QAction::triggered, this, &MainWindow::plotForm);
     connect(ui->settingsAction, &QAction::triggered, this, &MainWindow::settingsForm);
+
+    ui->tableView->setSortingEnabled(true);
 }
 
 MainWindow::~MainWindow()
