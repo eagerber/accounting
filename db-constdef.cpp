@@ -50,6 +50,17 @@ const QString Queries::distinctProductCount =
 "SELECT COUNT(DISTINCT Product)\n\
 FROM Purchases;";
 
+static const QString accumulateSumByDate =
+"SELECT t1.*, \
+(\
+  SELECT SUM(t2.Price * t2.Count)\
+  FROM Purchases t2\
+  WHERE t2.[ID] <= t1.[ID]\
+) accumulatedSum\
+FROM Purchases t1\
+WHERE accumulatedSum < %1\
+ORDER BY t1.Date DESC, t1.ID;";
+
 const QString Queries::distinctField(QString field)
 {
     QString queryString = "SELECT DISTINCT [%1] FROM " + purchasesTable + ";";
