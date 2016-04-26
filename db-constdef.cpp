@@ -68,7 +68,7 @@ const QString Queries::accumulateSumByDate(double sum)
     ) accumulatedSum\
     FROM Purchases t1\
     WHERE accumulatedSum < %1\
-    ORDER BY t1.Date DESC, t1.ID;";
+    ORDER BY accumulatedSum;";
 
     return accumulateSumByDate.arg(sum);
 }
