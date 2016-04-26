@@ -2,6 +2,7 @@
 #define STATISTICSFROM_H
 
 #include <QDialog>
+#include <QStandardItemModel>
 #include <memory>
 
 #include "db.h"
@@ -28,12 +29,18 @@ private slots:
 
     void on_sumOnStoresButton_clicked();
 
+    void on_accumulateSumByDatePushButton_clicked();
+
 private:
     void setupXAxis(QVector<double> ticks, QVector<QString> labels);
     void setupYAxis(double minValue, double maxValue);
     void setupLegend();
 
+    void updateTableView();
+    void resizeTableView(double width);
+
     Ui::StatisticsFrom *ui;
+    QStandardItemModel *tableViewModel;
 };
 
 #endif // STATISTICSFROM_H

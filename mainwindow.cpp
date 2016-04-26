@@ -42,10 +42,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QPoint center = rect.center(); //координаты центра экрана
 
     _statisticsForm.setGeometry(
-                center.x() + geometry().width() / 2 + 20,
-                center.y() - geometry().height() / 2,
-                800,
-                500);
+        center.x() + geometry().width() / 2 + 20,
+        center.y() - geometry().height() / 2,
+        800, 500);
     _statisticsForm.show();
 
     connect(ui->plotAction, &QAction::triggered, this, &MainWindow::plotForm);
