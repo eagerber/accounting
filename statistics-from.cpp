@@ -23,9 +23,6 @@ StatisticsFrom::StatisticsFrom(QWidget *parent) :
             Qt::WindowCloseButtonHint;
 
     this->setWindowFlags(flags);
-
-    //resizeTableView(500);
-    //updateTableView();
 }
 
 StatisticsFrom::~StatisticsFrom()
@@ -54,6 +51,13 @@ void StatisticsFrom::on_consumptionByMonthPushButton_clicked()
 void StatisticsFrom::on_accumulateSumByDatePushButton_clicked()
 {
     updateTableView();
+}
+
+void StatisticsFrom::resizeEvent(QResizeEvent* event)
+{
+    QDialog::resizeEvent(event);
+
+    resizeTableView();
 }
 
 void StatisticsFrom::updateTableView()
@@ -103,18 +107,18 @@ void StatisticsFrom::updateTableView()
 
     ui->tableView->setModel(tableViewModel);
 
-    double width = this->width() / 100.0f - 1.5;
-    resizeTableView(width);
+    ui->tableView->verticalHeader()->hide();
+    resizeTableView();
 }
 
-void StatisticsFrom::resizeTableView(double width)
+void StatisticsFrom::resizeTableView()
 {
-    qDebug() << width;
+    double width = ui->tableView->width() / 100.0f - 0.2;
     ui->tableView->setColumnWidth(0, round(width * 4));
     ui->tableView->setColumnWidth(1, round(width * 20));
     ui->tableView->setColumnWidth(2, round(width * 20));
-    ui->tableView->setColumnWidth(3, round(width * 7));
-    ui->tableView->setColumnWidth(4, round(width * 7));
-    ui->tableView->setColumnWidth(5, round(width * 14));
+    ui->tableView->setColumnWidth(3, round(width * 10));
+    ui->tableView->setColumnWidth(4, round(width * 10));
+    ui->tableView->setColumnWidth(5, round(width * 16));
     ui->tableView->setColumnWidth(6, round(width * 20));
 }

@@ -31,13 +31,15 @@ private slots:
 
     void on_accumulateSumByDatePushButton_clicked();
 
+    void resizeEvent(QResizeEvent* event);
+
 private:
     void setupXAxis(QVector<double> ticks, QVector<QString> labels);
     void setupYAxis(double minValue, double maxValue);
     void setupLegend();
 
     void updateTableView();
-    void resizeTableView(double width);
+    void resizeTableView();
 
     Ui::StatisticsFrom *ui;
     QStandardItemModel *tableViewModel;
