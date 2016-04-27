@@ -64,7 +64,7 @@ const QString Queries::accumulateSumByDate(double sum)
     (\
       SELECT SUM(t2.Price * t2.Count)\
       FROM Purchases t2\
-      WHERE t2.[ID] <= t1.[ID]\
+      WHERE t2.[ID] >= t1.[ID]\
     ) accumulatedSum\
     FROM Purchases t1\
     WHERE accumulatedSum < %1\
