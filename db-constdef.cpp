@@ -57,20 +57,34 @@ const QString Queries::distinctField(QString field)
     return queryString.arg(field);
 }
 
-const QString Queries::accumulateSumByDate(double sum)
+const QString Queries::accumulatedSumByID(double sum)
 {
-    QString accumulateSumByDate =
-    "SELECT t1.*, \
-    (\
-      SELECT SUM(t2.Price * t2.Count)\
-      FROM Purchases t2\
-      WHERE t2.[ID] >= t1.[ID]\
-    ) accumulatedSum\
-    FROM Purchases t1\
-    WHERE accumulatedSum < %1\
-    ORDER BY accumulatedSum;";
+    QString queryString =
+"SELECT t1.*, \
+( \
+  SELECT SUM(t2.Price * t2.Count) \
+  FROM Purchases t2 \
+  WHERE t2.[ID] >= t1.[ID] \
+) accumulatedSum \
+FROM Purchases t1 \
+WHERE accumulatedSum < %1 \
+ORDER BY accumulatedSum;";
 
-    return accumulateSumByDate.arg(sum);
+    return queryString.arg(sum);
+}
+
+const QString Queries::groupAccumulatedSum(double sum)
+{
+    QString fromQuery = accumulatedSumByID(sum);
+    fromQuery.remove(fromQuery.length() - 1, 1);
+
+    QString queryString =
+"SELECT *, SUM(accumulatedSum) groupAccumulatedSum \
+FROM ( %1 ) \
+GROUP BY Category \
+ORDER BY groupAccumulatedSum DESC;";
+
+    return queryString.arg(fromQuery);
 }
 
 const QString Queries::insertIntoPurchases(

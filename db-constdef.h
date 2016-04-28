@@ -26,7 +26,8 @@ public:
     static const QString distinctProductCount;
 
     static const QString distinctField(QString field);
-    static const QString accumulateSumByDate(double sum);
+    static const QString accumulatedSumByID(double sum);
+    static const QString groupAccumulatedSum(double sum);
 
     static const QString insertIntoPurchases(QString productValue,
         QString storeValue,

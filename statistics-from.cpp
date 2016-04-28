@@ -63,7 +63,17 @@ void StatisticsFrom::resizeEvent(QResizeEvent* event)
 void StatisticsFrom::updateTableView()
 {
     double maxTotal = ui->maxTotalLineEdit->text().toDouble();
-    auto query = DB::select(Queries::accumulateSumByDate(maxTotal));
+
+    QSharedPointer<QSqlQuery> query;
+    if(ui->purchaseRadioButton->isChecked())
+    {
+        query = DB::select(Queries::accumulatedSumByID(maxTotal));
+    }
+    else if(ui->categoryRadioButton->isChecked())
+    {
+        query = DB::select(Queries::groupAccumulatedSum(maxTotal));
+    }
+    qDebug() << Queries::groupAccumulatedSum(maxTotal);
 
     delete tableViewModel;
     tableViewModel = new QStandardItemModel;
