@@ -109,7 +109,14 @@ void StatisticsFrom::updateTableView()
         tableViewModel->setItem(index, 4, item);
         item = new QStandardItem(query->value(7).toString());
         tableViewModel->setItem(index, 5, item);
-        item = new QStandardItem(query->value(9).toString());
+        if(ui->purchaseRadioButton->isChecked())
+        {
+            item = new QStandardItem(query->value(9).toString());
+        }
+        else if(ui->categoryRadioButton->isChecked())
+        {
+            item = new QStandardItem(query->value(10).toString());
+        }
         tableViewModel->setItem(index, 6, item);
 
         index++;

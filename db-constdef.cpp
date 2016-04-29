@@ -68,7 +68,7 @@ const QString Queries::accumulatedSumByID(double sum)
 ) accumulatedSum \
 FROM Purchases t1 \
 WHERE accumulatedSum < %1 \
-ORDER BY accumulatedSum;";
+ORDER BY accumulatedSum DESC;";
 
     return queryString.arg(sum);
 }
@@ -79,8 +79,8 @@ const QString Queries::groupAccumulatedSum(double sum)
     fromQuery.remove(fromQuery.length() - 1, 1);
 
     QString queryString =
-"SELECT *, SUM(accumulatedSum) groupAccumulatedSum \
-FROM ( %1 ) \
+"SELECT *, SUM(t3.Price * t3.Count) groupAccumulatedSum \
+FROM ( %1 ) t3 \
 GROUP BY Category \
 ORDER BY groupAccumulatedSum DESC;";
 
