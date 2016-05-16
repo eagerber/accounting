@@ -191,13 +191,19 @@ void MainWindow::readSettings(QString settingsFileName)
     DB::init(dbFileName);
 }
 
-void MainWindow::updateTableView()
+void MainWindow::updateTableView(QString filter)
 {
     auto model = new QSqlRelationalTableModel(this, DB::sdb());
 
     model->setEditStrategy(QSqlTableModel::OnFieldChange);
     model->setJoinMode(QSqlRelationalTableModel::LeftJoin);
     model->setTable(Queries::purchasesTable);
+
+    if(!filter.isEmpty())
+    {
+        model->setFilter(filter);
+    }
+
     model->select();
 
     ui->tableView->setModel(model);
@@ -216,6 +222,7 @@ void MainWindow::insert()
         ui->storeNameEdit->text(),
         ui->countEdit->text().replace(",", "."),
         ui->priceEdit->text().replace(",", "."),
+        ui->currencyEdit->text(),
         ui->categoryEdit->text(),
         ui->dateEdit->text());
 
@@ -230,4 +237,9 @@ void MainWindow::insert()
 void MainWindow::reverseViewState(QDialog &dialog)
 {
     dialog.isVisible() ? dialog.hide() : dialog.show();
+}
+
+void MainWindow::on_updateLineEdit_editingFinished()
+{
+    updateTableView("Purchases.Product LIKE '%" + ui->updateLineEdit->text() + "%'");
 }

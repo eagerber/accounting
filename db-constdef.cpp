@@ -21,6 +21,7 @@ const QString Queries::product = "Product";
 const QString Queries::store = "Store";
 const QString Queries::count = "Count";
 const QString Queries::price = "Price";
+const QString Queries::currency = "Currency";
 const QString Queries::category = "Category";
 const QString Queries::date = "Date";
 
@@ -92,23 +93,26 @@ const QString Queries::insertIntoPurchases(
         QString storeValue,
         QString countValue,
         QString priceValue,
+        QString currencyValue,
         QString categoryValue,
         QString dateValue)
 {
     QString queryString =
-"INSERT INTO Purchases (%1, %2, %3, %4, %5, %6)\n\
-VALUES (\"%7\", \"%8\", \"%9\", \"%10\", \"%11\", \"%12\");";
+"INSERT INTO Purchases (%1, %2, %3, %4, %5, %6, %7)\n\
+VALUES (\"%8\", \"%9\", \"%10\", \"%11\", \"%12\", \"%13\", \"%14\");";
 
     return queryString.arg(product)
             .arg(store)
             .arg(count)
             .arg(price)
+            .arg(currency)
             .arg(category)
             .arg(date)
             .arg(productValue)
             .arg(storeValue)
             .arg(countValue)
             .arg(priceValue)
+            .arg(currencyValue)
             .arg(categoryValue)
             .arg(dateValue);
 }
