@@ -5,6 +5,7 @@
 
 #include <QString>
 #include <QVector>
+#include <QDateTime>
 
 class SumOnPlot : public AccPlot
 {
@@ -22,9 +23,13 @@ public:
 
 private:
     SumOnPlot() = default;
+    double exchangeRate(QString currency, QDate date);
+    void categoriesPlot();
+    void storesPlot();
+
     void setupXAxis(QVector<double> ticks, QVector<QString> labels);
 
-    QString _queryString;
+    PlotType _plotType;
 };
 
 #endif // SUMONCATEGORIESPLOT_H

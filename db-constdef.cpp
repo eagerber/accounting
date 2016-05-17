@@ -25,6 +25,26 @@ const QString Queries::currency = "Currency";
 const QString Queries::category = "Category";
 const QString Queries::date = "Date";
 
+const QString Queries::selectAll =
+"SELECT *\n\
+FROM Purchases;";
+
+const QString Queries::stores =
+"SELECT Store\n\
+FROM Purchases\n\
+GROUP BY Store;";
+
+const QString Queries::categories =
+"SELECT Category\n\
+FROM Purchases\n\
+GROUP BY Category;";
+
+const QString Queries::exchangeRate =
+"SELECT *\n\
+FROM ExchangeRate\n\
+WHERE Currency = '%1'\n\
+ORDER BY Date";
+
 const QString Queries::sumOnCategories =
 "SELECT Category, SUM(Count * Price) sumField\n\
 FROM Purchases \n\

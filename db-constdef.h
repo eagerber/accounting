@@ -20,6 +20,11 @@ public:
     static const QString category;
     static const QString date;
 
+    static const QString selectAll;
+    static const QString stores;
+    static const QString categories;
+    static const QString exchangeRate;
+
     static const QString sumOnCategories;
     static const QString sumOnStores;
     static const QString prudctsPrice;
