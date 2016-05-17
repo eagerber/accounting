@@ -6,6 +6,8 @@
 #include <QString>
 #include <QVector>
 #include <QDateTime>
+#include <QSharedPointer>
+#include <QSqlQuery>
 
 class SumOnPlot : public AccPlot
 {
@@ -24,8 +26,8 @@ public:
 private:
     SumOnPlot() = default;
     double exchangeRate(QString currency, QDate date);
-    void categoriesPlot();
-    void storesPlot();
+    void categoriesPlot(QSharedPointer<QSqlQuery> allRecords);
+    void storesPlot(QSharedPointer<QSqlQuery> allRecords);
 
     void setupXAxis(QVector<double> ticks, QVector<QString> labels);
 
