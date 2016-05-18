@@ -5,7 +5,6 @@
 
 #include <QString>
 #include <QVector>
-#include <QDateTime>
 #include <QSharedPointer>
 #include <QSqlQuery>
 
@@ -25,9 +24,8 @@ public:
 
 private:
     SumOnPlot() = default;
-    double exchangeRate(QString currency, QDate date);
-    void categoriesPlot(QSharedPointer<QSqlQuery> allRecords);
-    void storesPlot(QSharedPointer<QSqlQuery> allRecords);
+    QMap<QString, double> categoriesPlotData(QSharedPointer<QSqlQuery> allRecords);
+    QMap<QString, double> storesPlotData(QSharedPointer<QSqlQuery> allRecords);
 
     void setupXAxis(QVector<double> ticks, QVector<QString> labels);
 

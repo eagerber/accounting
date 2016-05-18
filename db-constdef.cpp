@@ -67,6 +67,11 @@ const QString Queries::consumptionByMonth =
 FROM Purchases\n\
 GROUP BY strftime('%Y', Date), strftime('%m', Date);";
 
+const QString Queries::consumptionByMonthWithoutGroup =
+"SELECT SELECT Count, Price, Currency, Date\n\
+FROM Purchases\n\
+ORDER BY Date;";
+
 const QString Queries::distinctProductCount =
 "SELECT COUNT(DISTINCT Product)\n\
 FROM Purchases;";

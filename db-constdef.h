@@ -29,6 +29,7 @@ public:
     static const QString sumOnStores;
     static const QString prudctsPrice;
     static const QString consumptionByMonth;
+    static const QString consumptionByMonthWithoutGroup;
     static const QString distinctProductCount;
 
     static const QString distinctField(QString field);

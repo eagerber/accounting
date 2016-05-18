@@ -20,66 +20,74 @@ void SumOnPlot::replot()
     _customPlot->clearItems();
     _customPlot->clearMask();
     _customPlot->clearFocus();
-
     _customPlot->setLocale(QLocale(QLocale::English, QLocale::UnitedKingdom));
 
+    QCPBars *plotBar = new QCPBars(_customPlot->xAxis, _customPlot->yAxis);
+    _customPlot->addPlottable(plotBar);
+
     auto allRecords = DB::select(Queries::selectAll);
+    QMap<QString, double> data;
     switch(_plotType)
     {
         case Categories:
         {
-            categoriesPlot(allRecords);
+            data = categoriesPlotData(allRecords);
+            plotBar->setName("Categories");
             break;
         }
         case Stores:
         {
-            storesPlot(allRecords);
+            data = storesPlotData(allRecords);
+            plotBar->setName("Stores");
             break;
         }
     }
+
+    QList<QPair<QString, double>> sortedMapData;
+    QMap<QString, double>::iterator item;
+    for(item = data.begin(); item != data.end(); ++item)
+    {
+        QString key = item.key();
+        double value = item.value();
+        sortedMapData.append(QPair<QString, double>(key, value));
+    }
+
+    qSort(sortedMapData.begin(),
+          sortedMapData.end(),
+          [](QPair<QString, double> &l, QPair<QString, double> &r){ return l.second > r.second; });
+
+    QVector<QString> labels;
+    QVector<double>  values,
+                     ticks;
+    int count = 0;
+    for(const auto &item : sortedMapData)
+    {
+        labels << item.first;
+        values << item.second;
+        ticks << ++count;
+    }
+
+    plotBar->setData(ticks, values);
+    setupXAxis(ticks, labels);
+
+    double maxValue = sortedMapData.begin()->second;
+    setupYAxis(0.0, maxValue);
+    setupLegend();
 
     _customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
     _customPlot->replot();
 }
 
-double SumOnPlot::exchangeRate(QString currency, QDate date)
-{
-    auto exchangeRate = DB::select(Queries::exchangeRate.arg(currency));
-
-    double course = 1.0;
-    while(exchangeRate->next())
-    {
-        QDate currentDate = exchangeRate->value(2).toDate();
-        if(date < currentDate)
-        {
-            break;
-        }
-
-        course = exchangeRate->value(3).toFloat();
-    }
-    return course;
-}
-
-void SumOnPlot::categoriesPlot(QSharedPointer<QSqlQuery> allRecords)
+QMap<QString, double> SumOnPlot::categoriesPlotData(QSharedPointer<QSqlQuery> allRecords)
 {
     auto categories = DB::select(Queries::categories);
 
     QMap<QString, double> categoriesData;
-    QVector<QString> labels;
-    QVector<double> ticks;
-    int count = 0;
     while(categories->next())
     {
         QString category = categories->value(0).toString();
-        labels << category;
         categoriesData[category] = 0.0;
-        ticks << ++count;
     }
-
-    // create empty bar chart objects:
-    QCPBars *categoriesBar = new QCPBars(_customPlot->xAxis, _customPlot->yAxis);
-    _customPlot->addPlottable(categoriesBar);
-    categoriesBar->setName("Categories");
 
     while(allRecords->next())
     {
@@ -92,35 +100,18 @@ void SumOnPlot::categoriesPlot(QSharedPointer<QSqlQuery> allRecords)
         categoriesData[currentCategory] += purchaseCount * purchasePrice * course;
     }
 
-    double minValue = std::numeric_limits<double>::max(),
-           maxValue = std::numeric_limits<double>::min();
-    for(const auto item : categoriesData.values())
-    {
-        minValue = qMin(minValue, item);
-        maxValue = qMax(maxValue, item);
-    }
-
-    categoriesBar->setData(ticks, categoriesData.values().toVector());
-
-    setupXAxis(ticks, labels);
-    setupYAxis(0.0, maxValue);
-    setupLegend();
+    return categoriesData;
 }
 
-void SumOnPlot::storesPlot(QSharedPointer<QSqlQuery> allRecords)
+QMap<QString, double> SumOnPlot::storesPlotData(QSharedPointer<QSqlQuery> allRecords)
 {
     auto stores = DB::select(Queries::stores);
 
     QMap<QString, double> storesData;
-    QVector<QString> labels;
-    QVector<double> ticks;
-    int count = 0;
     while(stores->next())
     {
         QString store = stores->value(0).toString();
-        labels << store;
         storesData[store] = 0.0;
-        ticks << ++count;
     }
 
     // create empty bar chart objects:
@@ -140,19 +131,7 @@ void SumOnPlot::storesPlot(QSharedPointer<QSqlQuery> allRecords)
         storesData[currentStore] += purchaseCount * purchasePrice * course;
     }
 
-    double minValue = std::numeric_limits<double>::max(),
-           maxValue = std::numeric_limits<double>::min();
-    for(const auto item : storesData.values())
-    {
-        minValue = qMin(minValue, item);
-        maxValue = qMax(maxValue, item);
-    }
-
-    storesBar->setData(ticks, storesData.values().toVector());
-
-    setupXAxis(ticks, labels);
-    setupYAxis(0.0, maxValue);
-    setupLegend();
+    return storesData;
 }
 
 void SumOnPlot::setupXAxis(QVector<double> ticks, QVector<QString> labels)

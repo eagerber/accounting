@@ -2,6 +2,8 @@
 
 #include "qcustomplot.h"
 
+#include "db-constdef.h"
+#include "db.h"
 
 AccPlot::AccPlot(QCustomPlot *customPlot)
 {
@@ -32,4 +34,22 @@ void AccPlot::setupYAxis(double minValue, double maxValue)
 void AccPlot::setupLegend()
 {
     _customPlot->legend->setVisible(false);
+}
+
+double AccPlot::exchangeRate(QString currency, QDate date)
+{
+    auto exchangeRate = DB::select(Queries::exchangeRate.arg(currency));
+
+    double course = 1.0;
+    while(exchangeRate->next())
+    {
+        QDate currentDate = exchangeRate->value(2).toDate();
+        if(date < currentDate)
+        {
+            break;
+        }
+
+        course = exchangeRate->value(3).toFloat();
+    }
+    return course;
 }

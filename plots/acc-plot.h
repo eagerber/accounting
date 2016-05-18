@@ -1,6 +1,9 @@
 #ifndef ACCPLOT_H
 #define ACCPLOT_H
 
+#include <QString>
+#include <QDate>
+
 class QCustomPlot;
 
 class AccPlot
@@ -15,6 +18,8 @@ protected:
     void setupXAxis(double minValue, double maxValue);
     void setupYAxis(double minValue, double maxValue);
     void setupLegend();
+
+    double exchangeRate(QString currency, QDate date);
 
     QCustomPlot *_customPlot;
 };
