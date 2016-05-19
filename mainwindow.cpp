@@ -241,5 +241,6 @@ void MainWindow::reverseViewState(QDialog &dialog)
 
 void MainWindow::on_updateLineEdit_editingFinished()
 {
-    updateTableView("Purchases.Product LIKE '%" + ui->updateLineEdit->text() + "%'");
+    QString pattern = "'%" + ui->updateLineEdit->text() + "%'";
+    updateTableView("Purchases.Product LIKE " + pattern + "OR Purchases.Store LIKE " + pattern);
 }
