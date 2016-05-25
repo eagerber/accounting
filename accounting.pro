@@ -15,41 +15,44 @@ QT += sql
 
 CONFIG += c++11
 
+INCLUDEPATH += ../utils
+
+Release:LIBS += -L../_build/release -ldatabase
+Debug:LIBS   += -L../_build/debug -ldatabase
+
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    db.cpp \
+    mainwindow.cpp \
     db-settings-form.cpp \
-    db-constdef.cpp \
     qcustomplot.cpp \
     statistics-from.cpp \
     plots/consumption-by-month.cpp \
     plots/acc-plot.cpp \
-    plots/sum-on-plot.cpp
+    plots/sum-on-plot.cpp \
+    queries.cpp
 
 HEADERS  += mainwindow.h \
-    db.h \
     db-settings-form.h \
-    db-constdef.h \
     qcustomplot.h \
     statistics-from.h \
     plots/consumption-by-month.h \
     plots/acc-plot.h \
-    plots/sum-on-plot.h
+    plots/sum-on-plot.h \
+    queries.h
 
 FORMS    += mainwindow.ui \
     dbsettingsform.ui \
     statisticsfrom.ui
 
-Release:DESTDIR = release
-Release:OBJECTS_DIR = release/.obj
-Release:MOC_DIR = release/.moc
-Release:RCC_DIR = release/.rcc
-Release:UI_DIR = release/.ui
+Release:DESTDIR = ../_build/release
+Release:OBJECTS_DIR = ../_build/release/.obj
+Release:MOC_DIR = ../_build/release/.moc
+Release:RCC_DIR = ../_build/release/.rcc
+Release:UI_DIR = ../_build/release/.ui
 
-Debug:DESTDIR = debug
-Debug:OBJECTS_DIR = debug/.obj
-Debug:MOC_DIR = debug/.moc
-Debug:RCC_DIR = debug/.rcc
-Debug:UI_DIR = debug/.ui
+Debug:DESTDIR = ../_build/debug
+Debug:OBJECTS_DIR = ../_build/debug/.obj
+Debug:MOC_DIR = ../_build/debug/.moc
+Debug:RCC_DIR = ../_build/debug/.rcc
+Debug:UI_DIR = ../_build/debug/.ui
 
 #QMAKE_POST_LINK=$(COPY_DIR) $$PWD/db-scripts $$OUT_PWD/$$DESTDIR

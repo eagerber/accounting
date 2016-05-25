@@ -1,11 +1,13 @@
 #include "db-settings-form.h"
 #include "ui_dbsettingsform.h"
 
+#include "database/db.h"
+
 #include <QDir>
 #include <QTextStream>
 #include <QFileDialog>
 
-#include "db.h"
+#include "queries.h"
 
 
 DBSettingsForm::DBSettingsForm(QWidget *parent) :
@@ -55,5 +57,5 @@ void DBSettingsForm::on_createDBButton_clicked()
     if(dbFileName.isEmpty())
         return;
 
-    DB::create(dbFileName);
+    DB::create(dbFileName, Queries::createDB);
 }

@@ -1,4 +1,4 @@
-#include "db-constdef.h"
+#include "queries.h"
 
 
 const QString Queries::createDB =

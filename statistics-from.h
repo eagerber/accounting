@@ -5,7 +5,7 @@
 #include <QStandardItemModel>
 #include <memory>
 
-#include "db.h"
+#include "database/db.h"
 
 
 namespace Ui {

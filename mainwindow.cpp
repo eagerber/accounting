@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "db-constdef.h"
+#include "queries.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -66,7 +66,7 @@ void MainWindow::on_updateButton_clicked()
 void MainWindow::on_connectPushButton_clicked()
 {
     QString dbFileName = QFileDialog::getOpenFileName(
-                this, tr("Choose DB"), "", tr("SQL Lite Files (*.sqldb *.db)"));
+        this, tr("Choose DB"), "", tr("SQL Lite Files (*.sqldb *.db)"));
 
     if(dbFileName.isEmpty())
         return;
@@ -242,5 +242,5 @@ void MainWindow::reverseViewState(QDialog &dialog)
 void MainWindow::on_updateLineEdit_editingFinished()
 {
     QString pattern = "'%" + ui->updateLineEdit->text() + "%'";
-    updateTableView("Purchases.Product LIKE " + pattern + "OR Purchases.Store LIKE " + pattern);
+    updateTableView("LOWER(Purchases.Product) LIKE " + pattern + "OR LOWER(Purchases.Store) LIKE " + pattern);
 }

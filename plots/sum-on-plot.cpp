@@ -3,8 +3,9 @@
 #include <QPair>
 
 #include "qcustomplot.h"
-#include "db-constdef.h"
-#include "db.h"
+#include "database/db.h"
+
+#include "queries.h"
 
 
 SumOnPlot::SumOnPlot(QCustomPlot *customPlot, PlotType plotType)

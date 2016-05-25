@@ -2,7 +2,7 @@
 #include "ui_statisticsfrom.h"
 
 #include "qcustomplot.h"
-#include "db-constdef.h"
+#include "queries.h"
 
 #include "plots/consumption-by-month.h"
 #include "plots/sum-on-plot.h"
@@ -16,11 +16,12 @@ StatisticsFrom::StatisticsFrom(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    Qt::WindowFlags flags = Qt::Window   |
+    Qt::WindowFlags flags =
+            Qt::Window                   |
             Qt::WindowSystemMenuHint     |
+            Qt::WindowCloseButtonHint    |
             Qt::WindowMinimizeButtonHint |
-            Qt::WindowMaximizeButtonHint |
-            Qt::WindowCloseButtonHint;
+            Qt::WindowMaximizeButtonHint;
 
     this->setWindowFlags(flags);
 }

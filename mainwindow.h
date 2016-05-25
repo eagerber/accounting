@@ -8,7 +8,9 @@
 #include <QCompleter>
 
 #include <QStringListModel>
-#include "db.h"
+
+#include "database/db.h"
+
 #include "db-settings-form.h"
 #include "statistics-from.h"
 

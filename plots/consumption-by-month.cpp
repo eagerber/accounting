@@ -1,8 +1,9 @@
 #include "consumption-by-month.h"
 
+#include "database/db.h"
+
 #include "qcustomplot.h"
-#include "db-constdef.h"
-#include "db.h"
+#include "queries.h"
 
 
 ConsumptionByMonth::ConsumptionByMonth(QCustomPlot *customPlot)

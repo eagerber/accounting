@@ -1,9 +1,10 @@
 #include "acc-plot.h"
 
 #include "qcustomplot.h"
+#include "database/db.h"
 
-#include "db-constdef.h"
-#include "db.h"
+#include "queries.h"
+
 
 AccPlot::AccPlot(QCustomPlot *customPlot)
 {
