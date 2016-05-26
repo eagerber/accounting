@@ -1,12 +1,12 @@
 
 #include <QApplication>
-#include "mainwindow.h"
+#include "accounting-mainwindow.h"
 
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
+    AccountingMainWindow w;
     w.show();
 
     return a.exec();

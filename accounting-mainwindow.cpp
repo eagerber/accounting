@@ -1,5 +1,5 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "accounting-mainwindow.h"
+#include "ui_accounting-mainwindow.h"
 
 #include "queries.h"
 
@@ -10,9 +10,9 @@
 #include <QDesktopWidget>
 
 
-MainWindow::MainWindow(QWidget *parent) :
+AccountingMainWindow::AccountingMainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
+    ui(new Ui::AccountingMainWindow),
     _dbsettingsForm(this),
     _statisticsForm(this)
 {
@@ -47,23 +47,23 @@ MainWindow::MainWindow(QWidget *parent) :
         800, 500);
     _statisticsForm.show();
 
-    connect(ui->plotAction, &QAction::triggered, this, &MainWindow::plotForm);
-    connect(ui->settingsAction, &QAction::triggered, this, &MainWindow::settingsForm);
+    connect(ui->plotAction, &QAction::triggered, this, &AccountingMainWindow::plotForm);
+    connect(ui->settingsAction, &QAction::triggered, this, &AccountingMainWindow::settingsForm);
 
     ui->tableView->setSortingEnabled(true);
 }
 
-MainWindow::~MainWindow()
+AccountingMainWindow::~AccountingMainWindow()
 {
     delete ui;
 }
 
-void MainWindow::on_updateButton_clicked()
+void AccountingMainWindow::on_updateButton_clicked()
 {
     updateTableView();
 }
 
-void MainWindow::on_connectPushButton_clicked()
+void AccountingMainWindow::on_connectPushButton_clicked()
 {
     QString dbFileName = QFileDialog::getOpenFileName(
         this, tr("Choose DB"), "", tr("SQL Lite Files (*.sqldb *.db)"));
@@ -78,19 +78,19 @@ void MainWindow::on_connectPushButton_clicked()
     autoCompleteModelForField("Category", _categoryCompleterModel);
 }
 
-void MainWindow::on_settingsPushButton_clicked()
+void AccountingMainWindow::on_settingsPushButton_clicked()
 {
     _dbsettingsForm.show();
 }
 
-void MainWindow::resizeEvent(QResizeEvent* event)
+void AccountingMainWindow::resizeEvent(QResizeEvent* event)
 {
     QMainWindow::resizeEvent(event);
 
     resizeTableView();
 }
 
-void MainWindow::on_insertPushButton_clicked()
+void AccountingMainWindow::on_insertPushButton_clicked()
 {
     insert();
     ui->productNameEdit->setFocus();
@@ -99,57 +99,57 @@ void MainWindow::on_insertPushButton_clicked()
     updateTableView();
 }
 
-void MainWindow::on_productNameEdit_returnPressed()
+void AccountingMainWindow::on_productNameEdit_returnPressed()
 {
     on_insertPushButton_clicked();
 }
 
-void MainWindow::on_storeNameEdit_returnPressed()
+void AccountingMainWindow::on_storeNameEdit_returnPressed()
 {
     on_insertPushButton_clicked();
 }
 
-void MainWindow::on_countEdit_returnPressed()
+void AccountingMainWindow::on_countEdit_returnPressed()
 {
     on_insertPushButton_clicked();
 }
 
-void MainWindow::on_priceEdit_returnPressed()
+void AccountingMainWindow::on_priceEdit_returnPressed()
 {
     on_insertPushButton_clicked();
 }
 
-void MainWindow::on_currencyEdit_returnPressed()
+void AccountingMainWindow::on_currencyEdit_returnPressed()
 {
     on_insertPushButton_clicked();
 }
 
-void MainWindow::on_categoryEdit_returnPressed()
+void AccountingMainWindow::on_categoryEdit_returnPressed()
 {
     on_insertPushButton_clicked();
 }
 
-void MainWindow::on_discountEdit_returnPressed()
+void AccountingMainWindow::on_discountEdit_returnPressed()
 {
     on_insertPushButton_clicked();
 }
 
-void MainWindow::on_dateEdit_returnPressed()
+void AccountingMainWindow::on_dateEdit_returnPressed()
 {
     on_insertPushButton_clicked();
 }
 
-void MainWindow::plotForm()
+void AccountingMainWindow::plotForm()
 {
     reverseViewState(_statisticsForm);
 }
 
-void MainWindow::settingsForm()
+void AccountingMainWindow::settingsForm()
 {
     reverseViewState(_dbsettingsForm);
 }
 
-void MainWindow::autoCompleteModelForField(const QString field, QStringListModel &completerModel)
+void AccountingMainWindow::autoCompleteModelForField(const QString field, QStringListModel &completerModel)
 {
     QString queryString = Queries::distinctField(field);
     auto query = DB::executeSqlQuery(queryString);
@@ -165,7 +165,7 @@ void MainWindow::autoCompleteModelForField(const QString field, QStringListModel
     completerModel.setStringList(list);
 }
 
-void MainWindow::resizeTableView()
+void AccountingMainWindow::resizeTableView()
 {
     auto &tableView = ui->tableView;
 
@@ -183,7 +183,7 @@ void MainWindow::resizeTableView()
     tableView->setColumnWidth(7, round(width * 14));
 }
 
-void MainWindow::readSettings(QString settingsFileName)
+void AccountingMainWindow::readSettings(QString settingsFileName)
 {
     QSettings settings(settingsFileName, QSettings::IniFormat);
 
@@ -191,7 +191,7 @@ void MainWindow::readSettings(QString settingsFileName)
     DB::init(dbFileName);
 }
 
-void MainWindow::updateTableView(QString filter)
+void AccountingMainWindow::updateTableView(QString filter)
 {
     auto model = new QSqlRelationalTableModel(this, DB::sdb());
 
@@ -215,7 +215,7 @@ void MainWindow::updateTableView(QString filter)
     resizeTableView();
 }
 
-void MainWindow::insert()
+void AccountingMainWindow::insert()
 {
     QString queryString = Queries::insertIntoPurchases(
         ui->productNameEdit->text(),
@@ -234,12 +234,12 @@ void MainWindow::insert()
     autoCompleteModelForField(Queries::category, _categoryCompleterModel);
 }
 
-void MainWindow::reverseViewState(QDialog &dialog)
+void AccountingMainWindow::reverseViewState(QDialog &dialog)
 {
     dialog.isVisible() ? dialog.hide() : dialog.show();
 }
 
-void MainWindow::on_updateLineEdit_editingFinished()
+void AccountingMainWindow::on_updateLineEdit_editingFinished()
 {
     QString pattern = "'%" + ui->updateLineEdit->text() + "%'";
     updateTableView("LOWER(Purchases.Product) LIKE " + pattern + "OR LOWER(Purchases.Store) LIKE " + pattern);

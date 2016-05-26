@@ -21,27 +21,29 @@ Release:LIBS += -L../_build/release -ldatabase
 Debug:LIBS   += -L../_build/debug -ldatabase
 
 SOURCES += main.cpp\
-    mainwindow.cpp \
     db-settings-form.cpp \
     qcustomplot.cpp \
     statistics-from.cpp \
     plots/consumption-by-month.cpp \
     plots/acc-plot.cpp \
     plots/sum-on-plot.cpp \
-    queries.cpp
+    queries.cpp \
+    accounting-mainwindow.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += \
     db-settings-form.h \
     qcustomplot.h \
     statistics-from.h \
     plots/consumption-by-month.h \
     plots/acc-plot.h \
     plots/sum-on-plot.h \
-    queries.h
+    queries.h \
+    accounting-mainwindow.h
 
-FORMS    += mainwindow.ui \
+FORMS    += \
     dbsettingsform.ui \
-    statisticsfrom.ui
+    statisticsfrom.ui \
+    accounting-mainwindow.ui
 
 Release:DESTDIR = ../_build/release
 Release:OBJECTS_DIR = ../_build/release/.obj

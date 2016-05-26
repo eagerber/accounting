@@ -16,16 +16,16 @@
 
 
 namespace Ui {
-class MainWindow;
+class AccountingMainWindow;
 }
 
-class MainWindow : public QMainWindow
+class AccountingMainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit AccountingMainWindow(QWidget *parent = 0);
+    ~AccountingMainWindow();
 
 private slots:
     void on_updateButton_clicked();
@@ -68,7 +68,7 @@ private:
 
     void reverseViewState(QDialog &dialog);
 
-    Ui::MainWindow *ui;
+    Ui::AccountingMainWindow *ui;
 
     QCompleter _productCompleter, _storeCompleter, _categoryCompleter;
     QStringListModel _productCompleterModel, _storeCompleterModel, _categoryCompleterModel;
